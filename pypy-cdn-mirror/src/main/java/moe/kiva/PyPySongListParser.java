@@ -38,12 +38,11 @@ public class PyPySongListParser {
   }
 
   private static @NotNull String getHtml(@NotNull String url) {
-    var httpClient = HttpClient.newHttpClient();
-    var request = HttpRequest.newBuilder()
-      .uri(java.net.URI.create(url))
-      .GET()
-      .build();
-    try {
+    try (var httpClient = HttpClient.newHttpClient()) {
+      var request = HttpRequest.newBuilder()
+        .uri(java.net.URI.create(url))
+        .GET()
+        .build();
       var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
       return response.body();
     } catch (IOException | InterruptedException e) {
