@@ -11,6 +11,6 @@ public class Main {
       : DEFAULT_SONG_LIST_URL;
     var songList = PyPySongListParser.parseSongList(songListUrl);
     var downloader = PyPySongDownloader.create(songList, "../template/pypydance-song");
-    downloader.downloadAllSingle();
+    downloader.downloadAllMulti();
   }
 }

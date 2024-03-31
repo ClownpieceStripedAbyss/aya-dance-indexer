@@ -16,9 +16,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public record PyPySongDownloader(
   @NotNull ImmutableSeq<PyPySongListParser.Song> songs,
@@ -35,6 +37,8 @@ public record PyPySongDownloader(
   private static final @NotNull ImmutableSeq<String> CDN_LIST = ImmutableSeq.of(
     "http://pypy.qwertyuiop.nz",
     "http://storage-kr1.llss.io",
+    "http://storage-kr2.llss.io",
+    "http://storage-kr3.llss.io",
     "http://storage-cf.llss.io"
   );
 
@@ -48,7 +52,7 @@ public record PyPySongDownloader(
       .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 10809)))
       .build();
     return new PyPySongDownloader(songs, MutableList.create(), outputDir,
-      Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()),
+      Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
       client);
   }
@@ -56,11 +60,11 @@ public record PyPySongDownloader(
   public void downloadAllMulti() {
     System.out.println("Spawning download tasks...");
     songs.forEach(song -> executor.submit(() -> {
-      downloadOne(song);
-
-      try {
-        Thread.sleep(10000);
-      } catch (InterruptedException ignored) {
+      if (downloadOne(song)) {
+        try {
+          Thread.sleep(30 * 1000);
+        } catch (InterruptedException ignored) {
+        }
       }
     }));
 
@@ -179,7 +183,9 @@ public record PyPySongDownloader(
   }
 
   private @NotNull String downloadVideoFromCDN(int id, @NotNull Path video, @NotNull String videoHash) {
-    for (var cdn : CDN_LIST) {
+    var list = CDN_LIST.stream().collect(Collectors.toList());
+    Collections.shuffle(list);
+    for (var cdn : list) {
       var url = "%s/%s".formatted(cdn, videoHash);
       try {
         var res = httpClient.send(
