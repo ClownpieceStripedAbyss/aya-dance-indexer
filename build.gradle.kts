@@ -181,7 +181,7 @@ subprojects {
 
   publishing.publications {
     create<MavenPublication>("maven") {
-      val githubUrl = "https://github.com/imkiva/template"
+      val githubUrl = "https://github.com/ClownpieceStripedAbyss/pypy-cdn-mirror"
       groupId = proj.group.toString()
       version = proj.version.toString()
       artifactId = proj.name
@@ -202,7 +202,7 @@ subprojects {
             name.set(n)
             email.set(u)
           }
-          dev("imkiva", "Kiva Oyama", "imkiva@islovely.icu")
+          
         }
         scm {
           connection.set("scm:git:$githubUrl")

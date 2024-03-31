@@ -1,4 +1,4 @@
-rootProject.name = "template"
+rootProject.name = "pypy-cdn-mirror"
 
 dependencyResolutionManagement {
   @Suppress("UnstableApiUsage") repositories {
@@ -7,5 +7,5 @@ dependencyResolutionManagement {
 }
 
 include(
-  "template",
+  "pypy-cdn-mirror",
 )
