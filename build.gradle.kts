@@ -45,7 +45,7 @@ supportedPlatforms = if (!buildAllPlatforms()) listOf(currentPlatform) else list
 )
 
 allprojects {
-  group = "home.superxlb"
+  group = "moe.kiva"
   version = projectVersion
 }
 
