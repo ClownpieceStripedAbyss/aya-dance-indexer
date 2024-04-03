@@ -7,8 +7,6 @@ import kala.value.primitive.IntVar;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ProxySelector;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -47,9 +45,8 @@ public record PyPySongDownloader(
     @NotNull String outputDir
   ) {
     var client = HttpClient.newBuilder()
-      // .followRedirects(HttpClient.Redirect.ALWAYS)
       .version(HttpClient.Version.HTTP_2)
-      .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 10809)))
+      // .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 10809)))
       .build();
     return new PyPySongDownloader(songs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
