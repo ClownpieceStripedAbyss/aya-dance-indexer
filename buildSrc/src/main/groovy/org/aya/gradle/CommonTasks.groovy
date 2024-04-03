@@ -83,7 +83,7 @@ final class CommonTasks {
       exclude '*.html'
       exclude 'META-INF/ECLIPSE_.*'
       manifest.attributes(
-        'Premain-Class': mainClass,
+        'Main-Class': mainClass,
         'Build': new SimpleDateFormat('yyyy/M/dd HH:mm:ss').format(new Date())
       )
       def jar = project.tasks.jar
