@@ -31,7 +31,8 @@ public record Downloader(
   @NotNull String outputDir,
   @NotNull ExecutorService executor,
   @NotNull Sync sync,
-  @NotNull HttpClient httpClient
+  @NotNull HttpClient httpClient,
+  long delaySeconds
 ) {
   private static @NotNull String jdApiForSong(int id) {
     return "https://jd.pypy.moe/api/v1/videos/%d.mp4".formatted(id);
@@ -48,7 +49,8 @@ public record Downloader(
 
   public static @NotNull Downloader create(
     @NotNull ImmutableSeq<Song> songs,
-    @NotNull String outputDir
+    @NotNull String outputDir,
+    long delaySeconds
   ) {
     var client = HttpClient.newBuilder()
       .version(HttpClient.Version.HTTP_2)
@@ -58,7 +60,7 @@ public record Downloader(
     return new Downloader(songs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
-      client);
+      client, delaySeconds);
   }
 
   public void downloadAllMulti() {
@@ -84,7 +86,7 @@ public record Downloader(
   public void downloadWithSleep(Song song) {
     if (downloadOne(song)) {
       try {
-        Thread.sleep(30 * 1000);
+        Thread.sleep(delaySeconds * 1000);
       } catch (InterruptedException ignored) {
       }
     }
@@ -105,9 +107,9 @@ public record Downloader(
       }
       return already;
     } catch (IOException e) {
-      System.err.printf("Failed to check metadata for song: %d: %s%n", song.id(), e.getMessage());
+      System.err.printf("WARN: Failed to check metadata for song: %d: %s%n", song.id(), e.getMessage());
     } catch (JsonSyntaxException e) {
-      System.err.printf("Failed to parse metadata for song: %d: %s%n", song.id(), e.getMessage());
+      System.err.printf("WARN: Failed to parse metadata for song: %d: %s%n", song.id(), e.getMessage());
       return false;
     }
     return false;
@@ -158,7 +160,7 @@ public record Downloader(
       );
       sync.increment();
     } catch (Exception e) {
-      System.err.printf("Failed to download song %d: %s%n", song.id(), e.getMessage());
+      System.err.printf("ERROR: Failed to download song %d: %s%n", song.id(), e.getMessage());
       markFailed(song);
     }
     return true;
@@ -238,7 +240,7 @@ public record Downloader(
           return url;
         }
       } catch (IOException | InterruptedException e) {
-        System.err.printf("Failed to download song %d from CDN %s: %s, trying another in 10s...%n", id, url, e.getMessage());
+        System.err.printf("WARN: Failed to download song %d from CDN %s: %s, trying another in 10s...%n", id, url, e.getMessage());
         try {
           Thread.sleep(10 * 1000);
         } catch (InterruptedException ignored) {

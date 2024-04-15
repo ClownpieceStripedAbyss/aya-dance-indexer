@@ -21,7 +21,7 @@ public class Main {
   }
 
   private static void downloadVideos(ImmutableSeq<Song> songList) {
-    var downloader = Downloader.create(songList, "./pypydance-song");
+    var downloader = Downloader.create(songList, "./pypydance-song", 30);
     downloader.downloadAllMulti();
   }
 
