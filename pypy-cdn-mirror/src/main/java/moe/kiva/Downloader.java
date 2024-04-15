@@ -2,6 +2,7 @@ package moe.kiva;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.mutable.MutableList;
 import kala.value.primitive.IntVar;
@@ -105,6 +106,9 @@ public record Downloader(
       return already;
     } catch (IOException e) {
       System.err.printf("Failed to check metadata for song: %d: %s%n", song.id(), e.getMessage());
+    } catch (JsonSyntaxException e) {
+      System.err.printf("Failed to parse metadata for song: %d: %s%n", song.id(), e.getMessage());
+      return false;
     }
     return false;
   }
