@@ -17,7 +17,7 @@ public record Song(
 ) {
   public @NotNull String prettyCategoryName() {
     return Option.ofNullable(categoryName)
-      .filter(String::isBlank)
+      .filterNot(String::isBlank)
       .getOrElse(() -> "Category %d".formatted(category));
   }
 }
