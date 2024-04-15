@@ -19,20 +19,20 @@ public class Main {
     var songListUrl = args.length == 1
       ? args[0]
       : DEFAULT_SONG_LIST_URL;
-    var songList = PyPySongListParser.parseSongList(songListUrl);
+    var songList = Parser.parseSongList(songListUrl);
 
     downloadVideos(songList);
     generateVidViz(songList);
   }
 
-  private static void downloadVideos(ImmutableSeq<PyPySongListParser.Song> songList) {
-    var downloader = PyPySongDownloader.create(songList, "./pypydance-song");
+  private static void downloadVideos(ImmutableSeq<Song> songList) {
+    var downloader = Downloader.create(songList, "./pypydance-song");
     downloader.downloadAllMulti();
   }
 
-  private static void generateVidViz(@NotNull ImmutableSeq<PyPySongListParser.Song> songList) throws IOException {
+  private static void generateVidViz(@NotNull ImmutableSeq<Song> songList) throws IOException {
     var grouped = ImmutableMap.from(songList.stream()
-        .collect(Collectors.groupingBy(PyPySongListParser.Song::category)))
+        .collect(Collectors.groupingBy(Song::category)))
       .view()
       .map((cat, songs) -> new VidVizSongList(
         "Category %d".formatted(cat),
@@ -68,7 +68,7 @@ public class Main {
     @NotNull String urlForQuest,
     int playerIndex
   ) {
-    public VidVizSong(@NotNull PyPySongListParser.Song song) {
+    public VidVizSong(@NotNull Song song) {
       this(
         "%d: %s".formatted(song.id(), song.name()),
         "https://jd-testing.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),

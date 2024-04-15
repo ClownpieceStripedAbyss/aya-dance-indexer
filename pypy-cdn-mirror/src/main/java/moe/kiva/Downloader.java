@@ -20,9 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-public record PyPySongDownloader(
-  @NotNull ImmutableSeq<PyPySongListParser.Song> songs,
-  @NotNull MutableList<PyPySongListParser.Song> failed,
+public record Downloader(
+  @NotNull ImmutableSeq<Song> songs,
+  @NotNull MutableList<Song> failed,
   @NotNull String outputDir,
   @NotNull ExecutorService executor,
   @NotNull Sync sync,
@@ -40,8 +40,8 @@ public record PyPySongDownloader(
     "http://storage-cf.llss.io"
   );
 
-  public static @NotNull PyPySongDownloader create(
-    @NotNull ImmutableSeq<PyPySongListParser.Song> songs,
+  public static @NotNull Downloader create(
+    @NotNull ImmutableSeq<Song> songs,
     @NotNull String outputDir
   ) {
     var client = HttpClient.newBuilder()
@@ -49,7 +49,7 @@ public record PyPySongDownloader(
       // Better use an IP pool, as we are crawling a lot of videos
       // .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 10809)))
       .build();
-    return new PyPySongDownloader(songs, MutableList.create(), outputDir,
+    return new Downloader(songs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
       client);
@@ -75,7 +75,7 @@ public record PyPySongDownloader(
     System.out.printf("Downloaded %d songs, failed: %d%n", sync.current(), failed.size());
   }
 
-  public void downloadWithSleep(PyPySongListParser.Song song) {
+  public void downloadWithSleep(Song song) {
     if (downloadOne(song)) {
       try {
         Thread.sleep(30 * 1000);
@@ -84,7 +84,7 @@ public record PyPySongDownloader(
     }
   }
 
-  public boolean downloadOne(@NotNull PyPySongListParser.Song song) {
+  public boolean downloadOne(@NotNull Song song) {
     var basedir = Path.of(outputDir, String.valueOf(song.id()));
     var video = basedir.resolve("video.mp4");
     var metadata = basedir.resolve("metadata.json");
@@ -200,7 +200,7 @@ public record PyPySongDownloader(
     throw new RuntimeException("Failed to download song %d from all CDNs: %s".formatted(id, videoHash));
   }
 
-  private synchronized void markFailed(@NotNull PyPySongListParser.Song song) {
+  private synchronized void markFailed(@NotNull Song song) {
     failed.append(song);
     try {
       Files.writeString(Path.of(outputDir, "failed.txt"),

@@ -10,10 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Objects;
 
-public class PyPySongListParser {
-  public record Song(int id, int category, @NotNull String name) {
-  }
-
+public class Parser {
   public static @NotNull ImmutableSeq<Song> parseSongList(@NotNull String url) {
     var html = getHtml(url);
     return Jsoup.parse(html)
