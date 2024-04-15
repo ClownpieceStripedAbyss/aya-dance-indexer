@@ -6,6 +6,7 @@ import kala.collection.immutable.ImmutableSeq;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +22,13 @@ public class Main {
   }
 
   private static void downloadVideos(ImmutableSeq<Song> songList) {
-    var downloader = Downloader.create(songList, "./pypydance-song", 30);
+    var downloader = Downloader.create(
+      songList,
+      "./pypydance-song",
+      30,
+      // Better use an IP pool, as we are crawling a lot of videos
+      new InetSocketAddress("127.0.0.1", 10809)
+    );
     downloader.downloadAllMulti();
   }
 

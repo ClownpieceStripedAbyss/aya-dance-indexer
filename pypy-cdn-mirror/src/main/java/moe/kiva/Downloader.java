@@ -7,6 +7,7 @@ import kala.collection.immutable.ImmutableSeq;
 import kala.collection.mutable.MutableList;
 import kala.value.primitive.IntVar;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -50,13 +51,13 @@ public record Downloader(
   public static @NotNull Downloader create(
     @NotNull ImmutableSeq<Song> songs,
     @NotNull String outputDir,
-    long delaySeconds
+    long delaySeconds,
+    @Nullable InetSocketAddress proxy
   ) {
-    var client = HttpClient.newBuilder()
-      .version(HttpClient.Version.HTTP_2)
-      // Better use an IP pool, as we are crawling a lot of videos
-      // .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 10809)))
-      .build();
+    var builder = HttpClient.newBuilder()
+      .version(HttpClient.Version.HTTP_2);
+    if (proxy != null) builder.proxy(ProxySelector.of(proxy));
+    var client = builder.build();
     return new Downloader(songs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
