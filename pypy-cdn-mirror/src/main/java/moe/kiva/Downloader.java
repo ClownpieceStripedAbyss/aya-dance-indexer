@@ -37,6 +37,7 @@ public record Downloader(
     "http://storage-kr1.llss.io",
     "http://storage-kr2.llss.io",
     "http://storage-kr3.llss.io",
+    "http://storage-kr4.llss.io",
     "http://storage-cf.llss.io"
   );
 

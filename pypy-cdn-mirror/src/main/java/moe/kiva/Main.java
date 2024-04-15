@@ -13,13 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
-  public static final @NotNull String DEFAULT_SONG_LIST_URL = "https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vQAvsUeoYncuBCN3iJs6RpNFONmUvWumoK4SqKWsJ3svLAY_t0cPvneaGrDQwxzGj4k1RaJ-EhkrRFY/pubhtml";
 
   public static void main(String[] args) throws IOException {
-    var songListUrl = args.length == 1
-      ? args[0]
-      : DEFAULT_SONG_LIST_URL;
-    var songList = Parser.parseSongList(songListUrl);
+    var songList = GoogleDocParser.parseSongList();
 
     downloadVideos(songList);
     generateVidViz(songList);
@@ -34,12 +30,16 @@ public class Main {
     var grouped = ImmutableMap.from(songList.stream()
         .collect(Collectors.groupingBy(Song::category)))
       .view()
-      .map((cat, songs) -> new VidVizSongList(
-        "Category %d".formatted(cat),
-        songs.stream()
-          .map(VidVizSong::new)
-          .collect(Collectors.toList())
-      ))
+      .map((cat, songs) -> {
+        var catName = songs.isEmpty() ? "Category %d".formatted(cat) :
+          songs.getFirst().prettyCategoryName();
+        return new VidVizSongList(
+          catName,
+          songs.stream()
+            .map(VidVizSong::new)
+            .collect(Collectors.toList())
+        );
+      })
       .toImmutableSeq()
       .prepended(new VidVizSongList(
         "All Songs",

@@ -10,7 +10,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Objects;
 
-public class Parser {
+public class GoogleDocParser {
+  public static final @NotNull String DEFAULT_SONG_LIST_URL = "https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vQAvsUeoYncuBCN3iJs6RpNFONmUvWumoK4SqKWsJ3svLAY_t0cPvneaGrDQwxzGj4k1RaJ-EhkrRFY/pubhtml";
+
+  public static @NotNull ImmutableSeq<Song> parseSongList() {
+    return parseSongList(DEFAULT_SONG_LIST_URL);
+  }
+
   public static @NotNull ImmutableSeq<Song> parseSongList(@NotNull String url) {
     var html = getHtml(url);
     return Jsoup.parse(html)
@@ -25,7 +31,9 @@ public class Parser {
           var id = Integer.parseInt(tds.get(0).text());
           var category = Integer.parseInt(tds.get(1).text());
           var name = tds.get(2).text();
-          return new Song(id, category, name);
+          return new Song(id, category, name,
+            "", false, 0, 0, false, 1.0f
+          );
         } catch (NumberFormatException e) {
           return null;
         }
