@@ -137,15 +137,14 @@ public record Downloader(
     var metadata = basedir.resolve("metadata.json");
     var downloadUrl = basedir.resolve("download.txt");
 
-    if (alreadyDownloaded(song, metadata)) {
-      System.out.printf("[%d/%d] Skipping id: %d, name: %s, already downloaded%n",
-        sync.current(), sync.total,
-        song.id(), song.name());
-      sync.increment();
-      return false;
-    }
-
     try {
+      if (alreadyDownloaded(song, metadata)) {
+        System.out.printf("[%d/%d] Skipping id: %d, name: %s, already downloaded%n",
+          sync.current(), sync.total,
+          song.id(), song.name());
+        return false;
+      }
+
       System.out.printf(
         "[%d/%d] Start id: %d, name: %s, saving to: %s%n",
         sync.current(), sync.total, song.id(), song.name(), video
@@ -159,10 +158,11 @@ public record Downloader(
         "[%d/%d] OK id: %d, name: %s, from: %s%n",
         sync.current(), sync.total, song.id(), song.name(), videoUrl
       );
-      sync.increment();
     } catch (Exception e) {
       System.err.printf("ERROR: Failed to download song %d: %s%n", song.id(), e.getMessage());
       markFailed(song);
+    } finally {
+      sync.increment();
     }
     return true;
   }
