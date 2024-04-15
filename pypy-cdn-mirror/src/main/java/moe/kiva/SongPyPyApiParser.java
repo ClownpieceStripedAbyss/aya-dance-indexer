@@ -15,7 +15,7 @@ public class SongPyPyApiParser {
   private static final String API_URL = "https://jd.pypy.moe/api/v2/songs";
 
   record ApiSongList(
-    int updatedAt,
+    long updatedAt,
     List<ApiSong> songs,
     List<String> groups
   ) {}
@@ -40,7 +40,7 @@ public class SongPyPyApiParser {
       .stream()
       .map(s -> {
         var catName = Try.of(() -> apiSongs.groups.get(s.group))
-          .getOption();
+          .getOrNull();
         return new Song(s.id, s.group, s.name, catName,
           s.flip, s.start, s.end, s.skipRandom, s.volume);
       })

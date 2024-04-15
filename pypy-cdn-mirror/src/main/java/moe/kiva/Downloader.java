@@ -1,12 +1,15 @@
 package moe.kiva;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.mutable.MutableList;
 import kala.value.primitive.IntVar;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -15,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -85,13 +89,48 @@ public record Downloader(
     }
   }
 
+  private boolean alreadyDownloaded(@NotNull Song song, @NotNull Path metadata) {
+    if (!Files.exists(metadata)) return false;
+    try {
+      var contents = Files.readString(metadata, StandardCharsets.UTF_8);
+      var fromMetadata = new Gson().fromJson(contents, Song.class);
+      if (fromMetadata == null) return false;
+      var already = isMetadataForSameSong(song, fromMetadata);
+      if (already && needFixMetadata(song, fromMetadata)) {
+        System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
+          sync.current(), sync.total,
+          song.id(), song.name());
+        saveMetadata(song, metadata);
+      }
+      return already;
+    } catch (IOException e) {
+      System.err.printf("Failed to check metadata for song: %d: %s%n", song.id(), e.getMessage());
+    }
+    return false;
+  }
+
+  private boolean isMetadataForSameSong(@NotNull Song song, @NotNull Song fromMetadata) {
+    return fromMetadata.id() == song.id()
+      && Objects.equals(fromMetadata.name(), song.name())
+      && Objects.equals(fromMetadata.category(), song.category());
+  }
+
+  private boolean needFixMetadata(@NotNull Song song, @NotNull Song fromMetadata) {
+    return !Objects.equals(song.categoryName(), fromMetadata.categoryName())
+      || fromMetadata.start() != song.start()
+      || fromMetadata.end() != song.end()
+      || fromMetadata.flip() != song.flip()
+      || fromMetadata.skipRandom() != song.skipRandom()
+      || fromMetadata.volume() != song.volume();
+  }
+
   public boolean downloadOne(@NotNull Song song) {
     var basedir = Path.of(outputDir, String.valueOf(song.id()));
     var video = basedir.resolve("video.mp4");
     var metadata = basedir.resolve("metadata.json");
     var downloadUrl = basedir.resolve("download.txt");
 
-    if (Files.exists(metadata)) {
+    if (alreadyDownloaded(song, metadata)) {
       System.out.printf("[%d/%d] Skipping id: %d, name: %s, already downloaded%n",
         sync.current(), sync.total,
         song.id(), song.name());
@@ -107,8 +146,7 @@ public record Downloader(
 
       Files.createDirectories(basedir);
       var videoUrl = downloadVideoFromCDN(song.id(), video);
-      var json = new Gson().toJson(song);
-      Files.writeString(metadata, json, StandardCharsets.UTF_8);
+      saveMetadata(song, metadata);
       Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
       System.out.printf(
         "[%d/%d] OK id: %d, name: %s, from: %s%n",
@@ -120,6 +158,11 @@ public record Downloader(
       markFailed(song);
     }
     return true;
+  }
+
+  private void saveMetadata(@NotNull Song song, @NotNull Path metadata) throws IOException {
+    var json = new GsonBuilder().setPrettyPrinting().create().toJson(song);
+    Files.writeString(metadata, json, StandardCharsets.UTF_8);
   }
 
   private @NotNull HttpRequest makeRequest(int chromeVer, @NotNull String url) {
