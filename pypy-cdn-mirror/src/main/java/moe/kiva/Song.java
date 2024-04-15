@@ -1,12 +1,13 @@
 package moe.kiva;
 
+import kala.control.Option;
 import org.jetbrains.annotations.NotNull;
 
 public record Song(
   int id,
   int category,
   @NotNull String name,
-  @NotNull String categoryName,
+  @NotNull Option<String> categoryName,
   boolean flip,
   int start,
   int end,
@@ -14,7 +15,8 @@ public record Song(
   float volume
 ) {
   public @NotNull String prettyCategoryName() {
-    var trim = categoryName.trim();
-    return trim.isEmpty() ? "Category %d".formatted(category) : categoryName;
+    return categoryName
+      .filter(String::isBlank)
+      .getOrElse(() -> "Category %d".formatted(category));
   }
 }

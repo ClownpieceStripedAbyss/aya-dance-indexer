@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Main {
-
   public static void main(String[] args) throws IOException {
-    var songList = GoogleDocParser.parseSongList();
+    var songList = SongPyPyApiParser.parse();
 
     downloadVideos(songList);
     generateVidViz(songList);
@@ -66,14 +65,22 @@ public class Main {
     @NotNull String title,
     @NotNull String url,
     @NotNull String urlForQuest,
-    int playerIndex
+    int playerIndex,
+    float volume,
+    int start,
+    int end,
+    boolean flip
   ) {
     public VidVizSong(@NotNull Song song) {
       this(
         "%d: %s".formatted(song.id(), song.name()),
         "https://jd-testing.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),
         "",
-        0
+        0,
+        song.volume(),
+        song.start(),
+        song.end(),
+        song.flip()
       );
     }
   }
