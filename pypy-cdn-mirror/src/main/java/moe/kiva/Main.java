@@ -2,6 +2,7 @@ package moe.kiva;
 
 import com.google.gson.GsonBuilder;
 import kala.collection.immutable.ImmutableMap;
+import kala.collection.immutable.ImmutableSeq;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -20,9 +21,16 @@ public class Main {
       : DEFAULT_SONG_LIST_URL;
     var songList = PyPySongListParser.parseSongList(songListUrl);
 
-    // var downloader = PyPySongDownloader.create(songList, "../template/pypydance-song");
-    // downloader.downloadAllMulti();
+    downloadVideos(songList);
+    generateVidViz(songList);
+  }
 
+  private static void downloadVideos(ImmutableSeq<PyPySongListParser.Song> songList) {
+    var downloader = PyPySongDownloader.create(songList, "./pypydance-song");
+    downloader.downloadAllMulti();
+  }
+
+  private static void generateVidViz(@NotNull ImmutableSeq<PyPySongListParser.Song> songList) throws IOException {
     var grouped = ImmutableMap.from(songList.stream()
         .collect(Collectors.groupingBy(PyPySongListParser.Song::category)))
       .view()
