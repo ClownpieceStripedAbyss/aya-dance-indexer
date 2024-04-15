@@ -46,6 +46,7 @@ public record PyPySongDownloader(
   ) {
     var client = HttpClient.newBuilder()
       .version(HttpClient.Version.HTTP_2)
+      // Better use an IP pool, as we are crawling a lot of videos
       // .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 10809)))
       .build();
     return new PyPySongDownloader(songs, MutableList.create(), outputDir,
@@ -56,14 +57,7 @@ public record PyPySongDownloader(
 
   public void downloadAllMulti() {
     System.out.println("Spawning download tasks...");
-    songs.forEach(song -> executor.submit(() -> {
-      if (downloadOne(song)) {
-        try {
-          Thread.sleep(30 * 1000);
-        } catch (InterruptedException ignored) {
-        }
-      }
-    }));
+    songs.forEach(song -> executor.submit(() -> downloadWithSleep(song)));
 
     // wait for all to finish
     try {
@@ -77,15 +71,17 @@ public record PyPySongDownloader(
 
   public void downloadAllSingle() {
     System.out.println("Downloading songs...");
-    songs.forEach(song -> {
-      if (downloadOne(song)) {
-        try {
-          Thread.sleep(30 * 1000);
-        } catch (InterruptedException ignored) {
-        }
-      }
-    });
+    songs.forEach(this::downloadWithSleep);
     System.out.printf("Downloaded %d songs, failed: %d%n", sync.current(), failed.size());
+  }
+
+  public void downloadWithSleep(PyPySongListParser.Song song) {
+    if (downloadOne(song)) {
+      try {
+        Thread.sleep(30 * 1000);
+      } catch (InterruptedException ignored) {
+      }
+    }
   }
 
   public boolean downloadOne(@NotNull PyPySongListParser.Song song) {
