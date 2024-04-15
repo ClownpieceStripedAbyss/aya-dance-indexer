@@ -69,6 +69,7 @@ public class Main {
   }
 
   record VidVizSong(
+    int id,
     @NotNull String title,
     @NotNull String url,
     @NotNull String urlForQuest,
@@ -80,7 +81,8 @@ public class Main {
   ) {
     public VidVizSong(@NotNull Song song) {
       this(
-        "%d: %s".formatted(song.id(), song.name()),
+        song.id(),
+        song.name(),
         "https://jd-testing.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),
         "",
         0,
