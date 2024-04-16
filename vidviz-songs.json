@@ -41658,6 +41658,61 @@
         "start": 0,
         "end": 185,
         "flip": false
+      },
+      {
+        "id": 3794,
+        "title": "DANCE｜이세계아이돌 - 슈퍼히어로 ISEGYE IDOL - Superhero 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3794.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.34,
+        "start": 0,
+        "end": 118,
+        "flip": true
+      },
+      {
+        "id": 3795,
+        "title": "【かずは】ビビデバ / 星街すいせい 踊ってみた【オリジナル振付】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3795.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.4,
+        "start": 0,
+        "end": 169,
+        "flip": true
+      },
+      {
+        "id": 3796,
+        "title": "ILLIT (아일릿) ‘Magnetic’ Lisa Rhee Dance Cover",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3796.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.25,
+        "start": 0,
+        "end": 180,
+        "flip": true
+      },
+      {
+        "id": 3797,
+        "title": "JEON SOMI \u0027Fast Forward\u0027 Lisa Rhee Dance Cover",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3797.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.34,
+        "start": 0,
+        "end": 181,
+        "flip": true
+      },
+      {
+        "id": 3798,
+        "title": "[Kpop]LE SSERAFIM (르세라핌) \u0027SMART\u0027 Dance Mirror Mode",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3798.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.28,
+        "start": 0,
+        "end": 140,
+        "flip": false
       }
     ]
   },
@@ -79255,6 +79310,50 @@
         "start": 0,
         "end": 185,
         "flip": false
+      },
+      {
+        "id": 3794,
+        "title": "DANCE｜이세계아이돌 - 슈퍼히어로 ISEGYE IDOL - Superhero 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3794.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.34,
+        "start": 0,
+        "end": 118,
+        "flip": true
+      },
+      {
+        "id": 3796,
+        "title": "ILLIT (아일릿) ‘Magnetic’ Lisa Rhee Dance Cover",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3796.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.25,
+        "start": 0,
+        "end": 180,
+        "flip": true
+      },
+      {
+        "id": 3797,
+        "title": "JEON SOMI \u0027Fast Forward\u0027 Lisa Rhee Dance Cover",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3797.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.34,
+        "start": 0,
+        "end": 181,
+        "flip": true
+      },
+      {
+        "id": 3798,
+        "title": "[Kpop]LE SSERAFIM (르세라핌) \u0027SMART\u0027 Dance Mirror Mode",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3798.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.28,
+        "start": 0,
+        "end": 140,
+        "flip": false
       }
     ]
   },
@@ -83384,6 +83483,17 @@
         "volume": 0.68,
         "start": 0,
         "end": 217,
+        "flip": true
+      },
+      {
+        "id": 3795,
+        "title": "【かずは】ビビデバ / 星街すいせい 踊ってみた【オリジナル振付】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3795.mp4",
+        "urlForQuest": "",
+        "playerIndex": 0,
+        "volume": 0.4,
+        "start": 0,
+        "end": 169,
         "flip": true
       }
     ]
