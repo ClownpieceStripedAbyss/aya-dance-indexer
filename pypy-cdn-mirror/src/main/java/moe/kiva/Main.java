@@ -22,34 +22,38 @@ public class Main {
     @Nullable InetSocketAddress proxy,
     int downloadDelay
   ) {
-    public static @NotNull AppOpts parseEnv() throws IOException {
-      var envContents = Files.readString(Path.of(".env"), StandardCharsets.UTF_8);
-      var p = new Properties();
-      p.load(new StringReader(envContents));
+    public static @NotNull AppOpts parseEnv() {
+      try {
+        var envContents = Files.readString(Path.of(".env"), StandardCharsets.UTF_8);
+        var p = new Properties();
+        p.load(new StringReader(envContents));
 
-      var mirrorDownloadProxy = p.getProperty("MIRROR_DOWNLOAD_PROXY", "");
-      var videoPath = p.getProperty("VIDEO_PATH", "./pypydance-song");
-      var mirrorDownloadDelay = p.getProperty("MIRROR_DOWNLOAD_DELAY", "30");
+        var mirrorDownloadProxy = p.getProperty("MIRROR_DOWNLOAD_PROXY", "");
+        var videoPath = p.getProperty("VIDEO_PATH", "./pypydance-song");
+        var mirrorDownloadDelay = p.getProperty("MIRROR_DOWNLOAD_DELAY", "30");
 
-      if (mirrorDownloadProxy.isBlank()) {
+        if (mirrorDownloadProxy.isBlank()) {
+          return new AppOpts(
+            videoPath,
+            null,
+            Integer.parseInt(mirrorDownloadDelay)
+          );
+        }
+
+        var split = mirrorDownloadProxy.split(":");
+        if (split.length != 2) throw new IllegalArgumentException("Invalid proxy format");
+
+        var proxyHost = split[0];
+        var proxyPort = Integer.parseInt(split[1]);
+
         return new AppOpts(
           videoPath,
-          null,
+          new InetSocketAddress(proxyHost, proxyPort),
           Integer.parseInt(mirrorDownloadDelay)
         );
+      } catch (IOException e) {
+        return new AppOpts("./pypydance-song", null, 30);
       }
-
-      var split = mirrorDownloadProxy.split(":");
-      if (split.length != 2) throw new IllegalArgumentException("Invalid proxy format");
-
-      var proxyHost = split[0];
-      var proxyPort = Integer.parseInt(split[1]);
-
-      return new AppOpts(
-        videoPath,
-        new InetSocketAddress(proxyHost, proxyPort),
-        Integer.parseInt(mirrorDownloadDelay)
-      );
     }
   }
 
