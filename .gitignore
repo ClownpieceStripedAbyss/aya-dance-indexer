@@ -27,3 +27,5 @@ imgui.ini
 
 /pypydance-song
 PyPyDanceSync.ffs_gui
+
+.env
