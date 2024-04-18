@@ -1,5 +1,7 @@
 package moe.kiva;
 
+import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
+import com.github.houbb.pinyin.util.PinyinHelper;
 import com.google.gson.GsonBuilder;
 import kala.collection.immutable.ImmutableMap;
 import kala.collection.immutable.ImmutableSeq;
@@ -94,12 +96,26 @@ public class Main {
         );
       })
       .toImmutableSeq()
+      .view()
       .prepended(new VidVizSongList(
         "All Songs",
         songList.stream()
           .map(VidVizSong::new)
           .collect(Collectors.toList())
       ))
+      .appended(new VidVizSongList(
+        "Kiva's Test List",
+        ImmutableSeq.of(
+            findById(songList, 1589),
+            findById(songList, 3552),
+            findById(songList, 1840),
+            findById(songList, 1430),
+            findById(songList, 1333),
+            findById(songList, 3470)
+          )
+          .asJava()
+      ))
+      .toImmutableSeq()
       .asJava();
 
     var json = new GsonBuilder()
@@ -107,6 +123,12 @@ public class Main {
       .create()
       .toJson(grouped);
     Files.writeString(Path.of("vidviz-songs.json"), json, StandardCharsets.UTF_8);
+  }
+
+  private static @NotNull VidVizSong findById(@NotNull ImmutableSeq<Song> songList, int id) {
+    return songList.find(s -> s.id() == id)
+      .map(VidVizSong::new)
+      .getOrThrow(() -> new IllegalArgumentException("Song not found: %d".formatted(id)));
   }
 
   record VidVizSongList(
@@ -120,6 +142,7 @@ public class Main {
     @NotNull String title,
     @NotNull String url,
     @NotNull String urlForQuest,
+    @NotNull String titleSpell,
     int playerIndex,
     float volume,
     int start,
@@ -132,12 +155,23 @@ public class Main {
         song.name(),
         "https://jd-testing.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),
         "",
+        spell(song.name()),
         0,
         song.volume(),
         song.start(),
         song.end(),
         song.flip()
       );
+    }
+
+    private static @NotNull String spell(@NotNull String name) {
+      var s = PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER);
+      try {
+        var bytes = s.getBytes(StandardCharsets.UTF_8);
+        return new String(bytes, StandardCharsets.UTF_8);
+      } catch (Throwable t) {
+        return name;
+      }
     }
   }
 }
