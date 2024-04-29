@@ -4,6 +4,14 @@ moe.kiva.SongPyPyApiParser$ApiSongList
 moe.kiva.Main$VidVizSong
 moe.kiva.Main$VidVizSongList
 
+# pinyin
+com.github.houbb.pinyin.support.segment.DefaultPinyinSegment
+com.github.houbb.pinyin.support.chinese.DefaultsPinyinChinese
+com.github.houbb.pinyin.support.tone.DefaultPinyinTone
+com.github.houbb.pinyin.support.data.PinyinData
+com.github.houbb.pinyin.support.style.DefaultPinyinToneStyle
+com.github.houbb.pinyin.api.impl.Pinyin
+
 # Java classes
 java.lang.Class
 java.lang.String

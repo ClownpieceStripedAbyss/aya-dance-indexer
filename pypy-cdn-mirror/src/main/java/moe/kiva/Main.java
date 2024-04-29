@@ -165,8 +165,8 @@ public class Main {
     }
 
     private static @NotNull String spell(@NotNull String name) {
-      var s = PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER);
       try {
+        var s = PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER);
         var bytes = s.getBytes(StandardCharsets.UTF_8);
         return new String(bytes, StandardCharsets.UTF_8);
       } catch (Throwable t) {
