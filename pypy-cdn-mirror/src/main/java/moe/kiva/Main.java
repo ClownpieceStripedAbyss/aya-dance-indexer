@@ -155,7 +155,7 @@ public class Main {
       this(
         song.id(),
         song.name(),
-        "https://jd-testing.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),
+        "https://jd-cf.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),
         "",
         spell(song.name()),
         0,
