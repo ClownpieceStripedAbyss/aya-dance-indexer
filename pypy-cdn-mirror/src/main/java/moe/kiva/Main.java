@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -113,6 +114,7 @@ public class Main {
             findById(songList, 1333),
             findById(songList, 3470)
           )
+          .sorted(Comparator.comparingInt(VidVizSong::id))
           .asJava()
       ))
       .toImmutableSeq()

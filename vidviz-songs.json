@@ -7151,7 +7151,7 @@
         "playerIndex": 0,
         "volume": 0.57,
         "start": 0,
-        "end": 193,
+        "end": 145,
         "flip": false
       },
       {
@@ -22572,7 +22572,7 @@
         "volume": 0.79,
         "start": 0,
         "end": 209,
-        "flip": true
+        "flip": false
       },
       {
         "id": 1883,
@@ -22584,7 +22584,7 @@
         "volume": 0.76,
         "start": 0,
         "end": 305,
-        "flip": true
+        "flip": false
       },
       {
         "id": 1884,
@@ -45708,6 +45708,174 @@
         "volume": 0.3,
         "start": 0,
         "end": 299,
+        "flip": true
+      },
+      {
+        "id": 3816,
+        "title": "【みこ】NEW RECORD!! - tonerico 振り付けて踊ってみた【公開撮影 in 沖縄】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3816.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 み こ 】 NEW RECORD ! ! - tonerico z り f け て y っ て み た 【 g k c y in c s 】",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 204,
+        "flip": true
+      },
+      {
+        "id": 3817,
+        "title": "[KPOP] KISS OF LIFE - \u0027Midas Touch\u0027 ",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3817.mp4",
+        "urlForQuest": "",
+        "titleSpell": "[ KPOP ] KISS OF LIFE - \u0027Midas Touch\u0027",
+        "playerIndex": 0,
+        "volume": 0.29,
+        "start": 0,
+        "end": 168,
+        "flip": false
+      },
+      {
+        "id": 3818,
+        "title": "【こずえ×みりん】おちゃめ機能【踊ってみた】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3818.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 こ ず え × み り ん 】 お ち ゃ め j n 【 y っ て み た 】",
+        "playerIndex": 0,
+        "volume": 0.44,
+        "start": 18,
+        "end": 110,
+        "flip": true
+      },
+      {
+        "id": 3819,
+        "title": "【46-38】シュガーソングとビターステップ 踊ってみた【オリジナル振付】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3819.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 46 - 38 】 シ ュ ガ ー ソ ン グ と ビ タ ー ス テ ッ プ y っ て み た 【 オ リ ジ ナ ル z f 】",
+        "playerIndex": 0,
+        "volume": 0.28,
+        "start": 0,
+        "end": 252,
+        "flip": true
+      },
+      {
+        "id": 3820,
+        "title": "【バケ会】PAKU / asmi【踊ってみた】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3820.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 バ ケ h 】 PAKU / asmi 【 y っ て み た 】",
+        "playerIndex": 0,
+        "volume": 0.26,
+        "start": 0,
+        "end": 128,
+        "flip": true
+      },
+      {
+        "id": 3821,
+        "title": "【市川】空回りライブラリ 踊ってみた【秋】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3821.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 s c 】 k h り ラ イ ブ ラ リ y っ て み た 【 q 】",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 172,
+        "flip": true
+      },
+      {
+        "id": 3822,
+        "title": "【足太ぺんた】あの夏のいつかは 踊ってみた【オリジナル振付】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3822.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 z t ぺ ん た 】 あ の x の い つ か は y っ て み た 【 オ リ ジ ナ ル z f 】",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 256,
+        "flip": true
+      },
+      {
+        "id": 3823,
+        "title": "【ゆま茶】DECO*27 / ボルテッカー【踊ってみた】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3823.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 ゆ ま c 】 DECO * 27 / ボ ル テ ッ カ ー 【 y っ て み た 】",
+        "playerIndex": 0,
+        "volume": 0.38,
+        "start": 0,
+        "end": 153,
+        "flip": true
+      },
+      {
+        "id": 3824,
+        "title": "【このは】恋愛勇者を踊ってみた【初外ロケ!】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3824.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 こ の は 】 l a y z を y っ て み た 【 c w ロ ケ ! 】",
+        "playerIndex": 0,
+        "volume": 0.26,
+        "start": 0,
+        "end": 282,
+        "flip": true
+      },
+      {
+        "id": 3825,
+        "title": "DANCE｜그린라이츠 세레나데 하츠네미쿠 모션캡쳐 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3825.mp4",
+        "urlForQuest": "",
+        "titleSpell": "DANCE ｜ 그 린 라 이 츠 세 레 나 데 하 츠 네 미 쿠 모 션 캡 쳐 춤 춰 보 았 다",
+        "playerIndex": 0,
+        "volume": 0.33,
+        "start": 0,
+        "end": 243,
+        "flip": true
+      },
+      {
+        "id": 3826,
+        "title": "【ポケモンOP】1･2･3 踊ってみた/オリジナル振付 【うさみ×はるか】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3826.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 ポ ケ モ ン OP 】 1 ･ 2 ･ 3 y っ て み た / オ リ ジ ナ ル z f 【 う さ み × は る か 】",
+        "playerIndex": 0,
+        "volume": 0.63,
+        "start": 0,
+        "end": 303,
+        "flip": true
+      },
+      {
+        "id": 3827,
+        "title": "IVE 아이브 \u0027해야 (HEYA)\u0027 Lisa Rhee Dance Cover",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3827.mp4",
+        "urlForQuest": "",
+        "titleSpell": "IVE 아 이 브 \u0027 해 야 ( HEYA ) \u0027 Lisa Rhee Dance Cover",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 211,
+        "flip": true
+      },
+      {
+        "id": 3828,
+        "title": "DANCE｜러브라이브 소녀식 연애 학원 LOVELIVE!! Otome Shiki Ren\u0027ai Juku cosplay 코스프레 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3828.mp4",
+        "urlForQuest": "",
+        "titleSpell": "DANCE ｜ 러 브 라 이 브 소 녀 식 연 애 학 원 LOVELIVE ! ! Otome Shiki Ren\u0027ai Juku cosplay 코 스 프 레 춤 춰 보 았 다",
+        "playerIndex": 0,
+        "volume": 0.52,
+        "start": 0,
+        "end": 108,
+        "flip": true
+      },
+      {
+        "id": 3829,
+        "title": "DANCE｜메이드☆지상주의 メイド☆至上主義 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3829.mp4",
+        "urlForQuest": "",
+        "titleSpell": "DANCE ｜ 메 이 드 ☆ 지 상 주 의 メ イ ト ゙ ☆ z s z y 춤 춰 보 았 다",
+        "playerIndex": 0,
+        "volume": 0.39,
+        "start": 0,
+        "end": 147,
         "flip": true
       }
     ]
@@ -68487,7 +68655,7 @@
         "playerIndex": 0,
         "volume": 0.57,
         "start": 0,
-        "end": 193,
+        "end": 145,
         "flip": false
       },
       {
@@ -80895,6 +81063,18 @@
         "start": 0,
         "end": 165,
         "flip": false
+      },
+      {
+        "id": 3817,
+        "title": "[KPOP] KISS OF LIFE - \u0027Midas Touch\u0027 ",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3817.mp4",
+        "urlForQuest": "",
+        "titleSpell": "[ KPOP ] KISS OF LIFE - \u0027Midas Touch\u0027",
+        "playerIndex": 0,
+        "volume": 0.29,
+        "start": 0,
+        "end": 168,
+        "flip": false
       }
     ]
   },
@@ -86898,6 +87078,18 @@
         "start": 0,
         "end": 140,
         "flip": false
+      },
+      {
+        "id": 3827,
+        "title": "IVE 아이브 \u0027해야 (HEYA)\u0027 Lisa Rhee Dance Cover",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3827.mp4",
+        "urlForQuest": "",
+        "titleSpell": "IVE 아 이 브 \u0027 해 야 ( HEYA ) \u0027 Lisa Rhee Dance Cover",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 211,
+        "flip": true
       }
     ]
   },
@@ -87418,7 +87610,7 @@
         "volume": 0.79,
         "start": 0,
         "end": 209,
-        "flip": true
+        "flip": false
       },
       {
         "id": 1883,
@@ -87430,7 +87622,7 @@
         "volume": 0.76,
         "start": 0,
         "end": 305,
-        "flip": true
+        "flip": false
       },
       {
         "id": 1884,
@@ -91487,6 +91679,150 @@
         "start": 0,
         "end": 299,
         "flip": true
+      },
+      {
+        "id": 3816,
+        "title": "【みこ】NEW RECORD!! - tonerico 振り付けて踊ってみた【公開撮影 in 沖縄】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3816.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 み こ 】 NEW RECORD ! ! - tonerico z り f け て y っ て み た 【 g k c y in c s 】",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 204,
+        "flip": true
+      },
+      {
+        "id": 3818,
+        "title": "【こずえ×みりん】おちゃめ機能【踊ってみた】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3818.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 こ ず え × み り ん 】 お ち ゃ め j n 【 y っ て み た 】",
+        "playerIndex": 0,
+        "volume": 0.44,
+        "start": 18,
+        "end": 110,
+        "flip": true
+      },
+      {
+        "id": 3819,
+        "title": "【46-38】シュガーソングとビターステップ 踊ってみた【オリジナル振付】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3819.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 46 - 38 】 シ ュ ガ ー ソ ン グ と ビ タ ー ス テ ッ プ y っ て み た 【 オ リ ジ ナ ル z f 】",
+        "playerIndex": 0,
+        "volume": 0.28,
+        "start": 0,
+        "end": 252,
+        "flip": true
+      },
+      {
+        "id": 3820,
+        "title": "【バケ会】PAKU / asmi【踊ってみた】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3820.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 バ ケ h 】 PAKU / asmi 【 y っ て み た 】",
+        "playerIndex": 0,
+        "volume": 0.26,
+        "start": 0,
+        "end": 128,
+        "flip": true
+      },
+      {
+        "id": 3821,
+        "title": "【市川】空回りライブラリ 踊ってみた【秋】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3821.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 s c 】 k h り ラ イ ブ ラ リ y っ て み た 【 q 】",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 172,
+        "flip": true
+      },
+      {
+        "id": 3822,
+        "title": "【足太ぺんた】あの夏のいつかは 踊ってみた【オリジナル振付】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3822.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 z t ぺ ん た 】 あ の x の い つ か は y っ て み た 【 オ リ ジ ナ ル z f 】",
+        "playerIndex": 0,
+        "volume": 0.27,
+        "start": 0,
+        "end": 256,
+        "flip": true
+      },
+      {
+        "id": 3823,
+        "title": "【ゆま茶】DECO*27 / ボルテッカー【踊ってみた】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3823.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 ゆ ま c 】 DECO * 27 / ボ ル テ ッ カ ー 【 y っ て み た 】",
+        "playerIndex": 0,
+        "volume": 0.38,
+        "start": 0,
+        "end": 153,
+        "flip": true
+      },
+      {
+        "id": 3824,
+        "title": "【このは】恋愛勇者を踊ってみた【初外ロケ!】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3824.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 こ の は 】 l a y z を y っ て み た 【 c w ロ ケ ! 】",
+        "playerIndex": 0,
+        "volume": 0.26,
+        "start": 0,
+        "end": 282,
+        "flip": true
+      },
+      {
+        "id": 3825,
+        "title": "DANCE｜그린라이츠 세레나데 하츠네미쿠 모션캡쳐 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3825.mp4",
+        "urlForQuest": "",
+        "titleSpell": "DANCE ｜ 그 린 라 이 츠 세 레 나 데 하 츠 네 미 쿠 모 션 캡 쳐 춤 춰 보 았 다",
+        "playerIndex": 0,
+        "volume": 0.33,
+        "start": 0,
+        "end": 243,
+        "flip": true
+      },
+      {
+        "id": 3826,
+        "title": "【ポケモンOP】1･2･3 踊ってみた/オリジナル振付 【うさみ×はるか】",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3826.mp4",
+        "urlForQuest": "",
+        "titleSpell": "【 ポ ケ モ ン OP 】 1 ･ 2 ･ 3 y っ て み た / オ リ ジ ナ ル z f 【 う さ み × は る か 】",
+        "playerIndex": 0,
+        "volume": 0.63,
+        "start": 0,
+        "end": 303,
+        "flip": true
+      },
+      {
+        "id": 3828,
+        "title": "DANCE｜러브라이브 소녀식 연애 학원 LOVELIVE!! Otome Shiki Ren\u0027ai Juku cosplay 코스프레 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3828.mp4",
+        "urlForQuest": "",
+        "titleSpell": "DANCE ｜ 러 브 라 이 브 소 녀 식 연 애 학 원 LOVELIVE ! ! Otome Shiki Ren\u0027ai Juku cosplay 코 스 프 레 춤 춰 보 았 다",
+        "playerIndex": 0,
+        "volume": 0.52,
+        "start": 0,
+        "end": 108,
+        "flip": true
+      },
+      {
+        "id": 3829,
+        "title": "DANCE｜메이드☆지상주의 メイド☆至上主義 춤춰보았다",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3829.mp4",
+        "urlForQuest": "",
+        "titleSpell": "DANCE ｜ 메 이 드 ☆ 지 상 주 의 メ イ ト ゙ ☆ z s z y 춤 춰 보 았 다",
+        "playerIndex": 0,
+        "volume": 0.39,
+        "start": 0,
+        "end": 147,
+        "flip": true
       }
     ]
   },
@@ -91494,39 +91830,15 @@
     "title": "Kiva\u0027s Test List",
     "entries": [
       {
-        "id": 1589,
-        "title": "Warm Up - TWICE - THE FEELS (AIRSPARK REMIX)",
-        "url": "https://jd-testing.kiva.moe/api/v1/videos/1589.mp4",
+        "id": 1333,
+        "title": "[KPOP] KWON EUN BI - \"DOOR\"",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/1333.mp4",
         "urlForQuest": "",
-        "titleSpell": "Warm Up - TWICE - THE FEELS ( AIRSPARK REMIX )",
-        "playerIndex": 0,
-        "volume": 0.37,
-        "start": 0,
-        "end": 294,
-        "flip": false
-      },
-      {
-        "id": 3552,
-        "title": "Dua Lipa - Dance The Night (From Barbie The Album) -  DANCE WORKOUT",
-        "url": "https://jd-testing.kiva.moe/api/v1/videos/3552.mp4",
-        "urlForQuest": "",
-        "titleSpell": "Dua Lipa - Dance The Night ( From Barbie The Album ) - DANCE WORKOUT",
-        "playerIndex": 0,
-        "volume": 0.36,
-        "start": 0,
-        "end": 189,
-        "flip": false
-      },
-      {
-        "id": 1840,
-        "title": "[反転] CH4NGE ft.可不 - モーションキャプチャ",
-        "url": "https://jd-testing.kiva.moe/api/v1/videos/1840.mp4",
-        "urlForQuest": "",
-        "titleSpell": "[ f z ] CH4NGE ft . k b - モ ー シ ョ ン キ ャ プ チ ャ",
+        "titleSpell": "[ KPOP ] KWON EUN BI - \" DOOR \"",
         "playerIndex": 0,
         "volume": 0.26,
         "start": 0,
-        "end": 138,
+        "end": 207,
         "flip": false
       },
       {
@@ -91542,15 +91854,27 @@
         "flip": false
       },
       {
-        "id": 1333,
-        "title": "[KPOP] KWON EUN BI - \"DOOR\"",
-        "url": "https://jd-testing.kiva.moe/api/v1/videos/1333.mp4",
+        "id": 1589,
+        "title": "Warm Up - TWICE - THE FEELS (AIRSPARK REMIX)",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/1589.mp4",
         "urlForQuest": "",
-        "titleSpell": "[ KPOP ] KWON EUN BI - \" DOOR \"",
+        "titleSpell": "Warm Up - TWICE - THE FEELS ( AIRSPARK REMIX )",
+        "playerIndex": 0,
+        "volume": 0.37,
+        "start": 0,
+        "end": 294,
+        "flip": false
+      },
+      {
+        "id": 1840,
+        "title": "[反転] CH4NGE ft.可不 - モーションキャプチャ",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/1840.mp4",
+        "urlForQuest": "",
+        "titleSpell": "[ f z ] CH4NGE ft . k b - モ ー シ ョ ン キ ャ プ チ ャ",
         "playerIndex": 0,
         "volume": 0.26,
         "start": 0,
-        "end": 207,
+        "end": 138,
         "flip": false
       },
       {
@@ -91564,6 +91888,18 @@
         "start": 0,
         "end": 217,
         "flip": true
+      },
+      {
+        "id": 3552,
+        "title": "Dua Lipa - Dance The Night (From Barbie The Album) -  DANCE WORKOUT",
+        "url": "https://jd-testing.kiva.moe/api/v1/videos/3552.mp4",
+        "urlForQuest": "",
+        "titleSpell": "Dua Lipa - Dance The Night ( From Barbie The Album ) - DANCE WORKOUT",
+        "playerIndex": 0,
+        "volume": 0.36,
+        "start": 0,
+        "end": 189,
+        "flip": false
       }
     ]
   }
