@@ -99,10 +99,19 @@ public class Main {
       .toImmutableSeq()
       .view()
       .prepended(new VidVizSongList(
-        "All Songs",
-        songList.stream()
+        "Song's Family | VRChat Dance",
+        songList.view()
+          .filter(x -> x.name().contains("[Song]"))
           .map(VidVizSong::new)
-          .collect(Collectors.toList())
+          .toImmutableSeq()
+          .sorted(Comparator.comparingInt(VidVizSong::id))
+          .asJava()
+      ))
+      .prepended(new VidVizSongList(
+        "All Songs",
+        songList
+          .map(VidVizSong::new)
+          .asJava()
       ))
       .appended(new VidVizSongList(
         "Kiva's Test List",
@@ -112,7 +121,19 @@ public class Main {
             findById(songList, 1840),
             findById(songList, 1430),
             findById(songList, 1333),
-            findById(songList, 3470)
+            findById(songList, 3470),
+            new VidVizSong(
+              -1,
+              "[先行版] 期待爱 Expect Love (duo dance) | VRChat Fitness Dance | Song^_^",
+              "https://aya-dance-cf.kiva.moe/api/v1/videos/114514.mp4",
+              "",
+              VidVizSong.spell("期待爱 Expect Love (duo dance) | VRChat Fitness Dance | Song^_^"),
+              0,
+              0.4f,
+              0,
+              248,
+              false
+            )
           )
           .sorted(Comparator.comparingInt(VidVizSong::id))
           .asJava()
