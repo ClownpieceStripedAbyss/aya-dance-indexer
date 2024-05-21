@@ -121,14 +121,14 @@ public record Downloader(
   }
 
   private boolean isMetadataForSameSong(@NotNull Song song, @NotNull Song fromMetadata) {
-    return fromMetadata.id() == song.id()
-      && Objects.equals(fromMetadata.title(), song.title())
-      && Objects.equals(fromMetadata.category(), song.category());
+    return fromMetadata.id() == song.id();
   }
 
   private boolean needFixMetadata(@NotNull Song song, @NotNull Song fromMetadata) {
     return !Objects.equals(song.categoryName(), fromMetadata.categoryName())
+      || !Objects.equals(song.title(), fromMetadata.title())
       || !Objects.equals(song.titleSpell(), fromMetadata.titleSpell())
+      || fromMetadata.category() != song.category()
       || fromMetadata.start() != song.start()
       || fromMetadata.end() != song.end()
       || fromMetadata.flip() != song.flip()
