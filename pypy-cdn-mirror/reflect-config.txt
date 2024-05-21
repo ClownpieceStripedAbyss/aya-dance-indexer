@@ -1,8 +1,8 @@
 moe.kiva.Song
 moe.kiva.SongPyPyApiParser$ApiSong
 moe.kiva.SongPyPyApiParser$ApiSongList
-moe.kiva.Main$VidVizSong
-moe.kiva.Main$VidVizSongList
+moe.kiva.Song
+moe.kiva.SongList
 
 # pinyin
 com.github.houbb.pinyin.support.segment.DefaultPinyinSegment

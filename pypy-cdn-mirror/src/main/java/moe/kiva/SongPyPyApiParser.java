@@ -2,6 +2,7 @@ package moe.kiva;
 
 import com.google.gson.GsonBuilder;
 import kala.collection.immutable.ImmutableSeq;
+import kala.control.Option;
 import kala.control.Try;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,10 +40,25 @@ public class SongPyPyApiParser {
     return apiSongs.songs
       .stream()
       .map(s -> {
-        var catName = Try.of(() -> apiSongs.groups.get(s.group))
-          .getOrNull();
-        return new Song(s.id, s.group, s.name, catName,
-          s.flip, s.start, s.end, s.skipRandom, s.volume);
+        var catName = Try.of(() -> apiSongs.groups.get(s.group)).getOrNull();
+        var prettyCatName = Option.ofNullable(catName)
+          .filterNot(String::isBlank)
+          .getOrElse(() -> "Category %d".formatted(s.group));
+        return new Song(
+          s.id,
+          s.group,
+          s.name,
+          prettyCatName,
+          "https://aya-dance-cf.kiva.moe/api/v1/videos/%d.mp4".formatted(s.id),
+          "",
+          Song.spell(s.name),
+          0,
+          s.volume,
+          s.start,
+          s.end,
+          s.flip,
+          s.skipRandom
+        );
       })
       .collect(ImmutableSeq.factory());
   }

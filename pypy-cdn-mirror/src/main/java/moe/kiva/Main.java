@@ -1,7 +1,5 @@
 package moe.kiva;
 
-import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
-import com.github.houbb.pinyin.util.PinyinHelper;
 import com.google.gson.GsonBuilder;
 import kala.collection.immutable.ImmutableMap;
 import kala.collection.immutable.ImmutableSeq;
@@ -15,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -84,36 +81,24 @@ public class Main {
 
   private static void generateVidViz(@NotNull ImmutableSeq<Song> songList) throws IOException {
     var grouped = ImmutableMap.from(songList.stream()
-        .collect(Collectors.groupingBy(Song::category)))
+        .collect(Collectors.groupingBy(Song::categoryName)))
       .view()
-      .map((cat, songs) -> {
-        var catName = songs.isEmpty() ? "Category %d".formatted(cat) :
-          songs.getFirst().prettyCategoryName();
-        return new VidVizSongList(
-          catName,
-          songs.stream()
-            .map(VidVizSong::new)
-            .collect(Collectors.toList())
-        );
-      })
+      .map(SongList::new)
       .toImmutableSeq()
       .view()
-      .prepended(new VidVizSongList(
+      .prepended(new SongList(
         "Song's Family | VRChat Dance",
         songList.view()
-          .filter(x -> x.name().contains("[Song]"))
-          .map(VidVizSong::new)
+          .filter(x -> x.title().contains("[Song]"))
           .toImmutableSeq()
-          .sorted(Comparator.comparingInt(VidVizSong::id))
+          .sorted(Comparator.comparingInt(Song::id))
           .asJava()
       ))
-      .prepended(new VidVizSongList(
+      .prepended(new SongList(
         "All Songs",
-        songList
-          .map(VidVizSong::new)
-          .asJava()
+        songList.asJava()
       ))
-      .appended(new VidVizSongList(
+      .appended(new SongList(
         "Kiva's Test List",
         ImmutableSeq.of(
             findById(songList, 1589),
@@ -121,21 +106,9 @@ public class Main {
             findById(songList, 1840),
             findById(songList, 1430),
             findById(songList, 1333),
-            findById(songList, 3470),
-            new VidVizSong(
-              -1,
-              "[先行版] 期待爱 Expect Love (duo dance) | VRChat Fitness Dance | Song^_^",
-              "https://aya-dance-cf.kiva.moe/api/v1/videos/114514.mp4",
-              "",
-              VidVizSong.spell("期待爱 Expect Love (duo dance) | VRChat Fitness Dance | Song^_^"),
-              0,
-              0.4f,
-              0,
-              248,
-              false
-            )
+            findById(songList, 3470)
           )
-          .sorted(Comparator.comparingInt(VidVizSong::id))
+          .sorted(Comparator.comparingInt(Song::id))
           .asJava()
       ))
       .toImmutableSeq()
@@ -148,53 +121,8 @@ public class Main {
     Files.writeString(Path.of("vidviz-songs.json"), json, StandardCharsets.UTF_8);
   }
 
-  private static @NotNull VidVizSong findById(@NotNull ImmutableSeq<Song> songList, int id) {
+  private static @NotNull Song findById(@NotNull ImmutableSeq<Song> songList, int id) {
     return songList.find(s -> s.id() == id)
-      .map(VidVizSong::new)
       .getOrThrow(() -> new IllegalArgumentException("Song not found: %d".formatted(id)));
-  }
-
-  record VidVizSongList(
-    @NotNull String title,
-    @NotNull List<VidVizSong> entries
-  ) {
-  }
-
-  record VidVizSong(
-    int id,
-    @NotNull String title,
-    @NotNull String url,
-    @NotNull String urlForQuest,
-    @NotNull String titleSpell,
-    int playerIndex,
-    float volume,
-    int start,
-    int end,
-    boolean flip
-  ) {
-    public VidVizSong(@NotNull Song song) {
-      this(
-        song.id(),
-        song.name(),
-        "https://aya-dance-cf.kiva.moe/api/v1/videos/%d.mp4".formatted(song.id()),
-        "",
-        spell(song.name()),
-        0,
-        song.volume(),
-        song.start(),
-        song.end(),
-        song.flip()
-      );
-    }
-
-    private static @NotNull String spell(@NotNull String name) {
-      try {
-        var s = PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER);
-        var bytes = s.getBytes(StandardCharsets.UTF_8);
-        return new String(bytes, StandardCharsets.UTF_8);
-      } catch (Throwable t) {
-        return name;
-      }
-    }
   }
 }

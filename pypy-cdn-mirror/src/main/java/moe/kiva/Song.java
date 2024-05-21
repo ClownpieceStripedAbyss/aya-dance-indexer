@@ -1,23 +1,33 @@
 package moe.kiva;
 
-import kala.control.Option;
+import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
+import com.github.houbb.pinyin.util.PinyinHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.nio.charset.StandardCharsets;
 
 public record Song(
   int id,
   int category,
-  @NotNull String name,
-  @Nullable String categoryName,
-  boolean flip,
+  @NotNull String title,
+  @NotNull String categoryName,
+  @NotNull String url,
+  @NotNull String urlForQuest,
+  @NotNull String titleSpell,
+  int playerIndex,
+  float volume,
   int start,
   int end,
-  boolean skipRandom,
-  float volume
+  boolean flip,
+  boolean skipRandom
 ) {
-  public @NotNull String prettyCategoryName() {
-    return Option.ofNullable(categoryName)
-      .filterNot(String::isBlank)
-      .getOrElse(() -> "Category %d".formatted(category));
+  public static @NotNull String spell(@NotNull String name) {
+    try {
+      var s = PinyinHelper.toPinyin(name, PinyinStyleEnum.FIRST_LETTER);
+      var bytes = s.getBytes(StandardCharsets.UTF_8);
+      return new String(bytes, StandardCharsets.UTF_8);
+    } catch (Throwable t) {
+      return name;
+    }
   }
 }

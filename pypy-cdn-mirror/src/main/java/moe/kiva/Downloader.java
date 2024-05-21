@@ -95,13 +95,19 @@ public record Downloader(
     if (!Files.exists(metadata)) return false;
     try {
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
-      var fromMetadata = new Gson().fromJson(contents, Song.class);
-      if (fromMetadata == null) return false;
-      var already = isMetadataForSameSong(song, fromMetadata);
-      if (already && needFixMetadata(song, fromMetadata)) {
+      Song fromMetadata = null;
+      try {
+        fromMetadata = new Gson().fromJson(contents, Song.class);
+      } catch (Throwable ignored) {
+      }
+      // `fromMetadata == null` implies there's a breaking change in the format of the json,
+      // we should always fix it.
+      var already = fromMetadata == null || isMetadataForSameSong(song, fromMetadata);
+      var needFixMetadata = fromMetadata == null || needFixMetadata(song, fromMetadata);
+      if (already && needFixMetadata) {
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
-          song.id(), song.name());
+          song.id(), song.title());
         saveMetadata(song, metadata);
       }
       return already;
@@ -116,12 +122,13 @@ public record Downloader(
 
   private boolean isMetadataForSameSong(@NotNull Song song, @NotNull Song fromMetadata) {
     return fromMetadata.id() == song.id()
-      && Objects.equals(fromMetadata.name(), song.name())
+      && Objects.equals(fromMetadata.title(), song.title())
       && Objects.equals(fromMetadata.category(), song.category());
   }
 
   private boolean needFixMetadata(@NotNull Song song, @NotNull Song fromMetadata) {
     return !Objects.equals(song.categoryName(), fromMetadata.categoryName())
+      || !Objects.equals(song.titleSpell(), fromMetadata.titleSpell())
       || fromMetadata.start() != song.start()
       || fromMetadata.end() != song.end()
       || fromMetadata.flip() != song.flip()
@@ -139,13 +146,13 @@ public record Downloader(
       if (alreadyDownloaded(song, metadata)) {
         System.out.printf("[%d/%d] Skipping id: %d, name: %s, already downloaded%n",
           sync.current(), sync.total,
-          song.id(), song.name());
+          song.id(), song.title());
         return false;
       }
 
       System.out.printf(
         "[%d/%d] Start id: %d, name: %s, saving to: %s%n",
-        sync.current(), sync.total, song.id(), song.name(), video
+        sync.current(), sync.total, song.id(), song.title(), video
       );
 
       Files.createDirectories(basedir);
@@ -154,7 +161,7 @@ public record Downloader(
       Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
       System.out.printf(
         "[%d/%d] OK id: %d, name: %s, from: %s%n",
-        sync.current(), sync.total, song.id(), song.name(), videoUrl
+        sync.current(), sync.total, song.id(), song.title(), videoUrl
       );
     } catch (Exception e) {
       System.err.printf("ERROR: Failed to download song %d: %s%n", song.id(), e.getMessage());
@@ -253,7 +260,7 @@ public record Downloader(
     failed.append(song);
     try {
       Files.writeString(Path.of(outputDir, "failed.txt"),
-        "%d,%d,%s\n".formatted(song.id(), song.category(), song.name()),
+        "%d,%d,%s\n".formatted(song.id(), song.category(), song.title()),
         StandardCharsets.UTF_8,
         StandardOpenOption.APPEND, StandardOpenOption.CREATE);
     } catch (IOException ignored) {
