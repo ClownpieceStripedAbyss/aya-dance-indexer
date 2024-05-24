@@ -128,6 +128,7 @@ public record Downloader(
     return !Objects.equals(song.categoryName(), fromMetadata.categoryName())
       || !Objects.equals(song.title(), fromMetadata.title())
       || !Objects.equals(song.titleSpell(), fromMetadata.titleSpell())
+      || !Objects.equals(song.originalUrl(), fromMetadata.originalUrl())
       || fromMetadata.category() != song.category()
       || fromMetadata.start() != song.start()
       || fromMetadata.end() != song.end()
