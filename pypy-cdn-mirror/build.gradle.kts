@@ -1,4 +1,5 @@
 import org.aya.gradle.CommonTasks
+
 val mainClassQName = project.group.toString() + ".Main"
 CommonTasks.fatJar(project, mainClassQName)
 CommonTasks.nativeImageConfig(project)
@@ -33,6 +34,6 @@ graalvmNative {
   CommonTasks.nativeImageBinaries(
     project, javaToolchains, this,
     true,
-    true
+    true,
   )
 }
