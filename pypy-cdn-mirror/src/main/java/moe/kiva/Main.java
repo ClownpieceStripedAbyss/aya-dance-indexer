@@ -63,7 +63,7 @@ public class Main {
     System.out.printf("Proxy: %s%n", opts.proxy);
     System.out.printf("Download delay: %d%n", opts.downloadDelay);
 
-    var songList = SongPyPyApiParser.parse();
+    var songList = PyPyApi.parse();
 
     downloadVideos(opts, songList);
     generateVidViz(songList);

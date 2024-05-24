@@ -1,6 +1,6 @@
 moe.kiva.Song
-moe.kiva.SongPyPyApiParser$ApiSong
-moe.kiva.SongPyPyApiParser$ApiSongList
+moe.kiva.PyPyApi$ApiSong
+moe.kiva.PyPyApi$ApiSongList
 moe.kiva.Song
 moe.kiva.SongList
 

@@ -3,8 +3,10 @@ package moe.kiva;
 import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
 import com.github.houbb.pinyin.util.PinyinHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public record Song(
   int id,
@@ -19,7 +21,8 @@ public record Song(
   int start,
   int end,
   boolean flip,
-  boolean skipRandom
+  boolean skipRandom,
+  @Nullable List<String> originalUrl
 ) {
   public static @NotNull String spell(@NotNull String name) {
     try {

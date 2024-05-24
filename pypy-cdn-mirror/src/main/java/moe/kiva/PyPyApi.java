@@ -12,7 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-public class SongPyPyApiParser {
+public class PyPyApi {
   private static final String API_URL = "https://jd.pypy.moe/api/v2/songs";
 
   record ApiSongList(
@@ -57,7 +57,8 @@ public class SongPyPyApiParser {
           s.start,
           s.end,
           s.flip,
-          s.skipRandom
+          s.skipRandom,
+          s.originalUrl
         );
       })
       .collect(ImmutableSeq.factory());
