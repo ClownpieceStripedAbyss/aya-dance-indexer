@@ -104,11 +104,12 @@ public record Downloader(
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
       Song fromMetadata = null;
       boolean localMissingChecksum = false;
+      boolean remoteMissingChecksum = song.checksum() == null;
       try {
         fromMetadata = new Gson().fromJson(contents, Song.class);
         localMissingChecksum = fromMetadata.checksum() == null;
         // fast-path: song.checksum() is already computed from the video file
-        if (shouldUseLocalFiles(metadata, video) && song.checksum() != null) {
+        if (shouldUseLocalFiles(metadata, video) && !remoteMissingChecksum) {
           fromMetadata = fromMetadata.withChecksum(song.checksum());
         } else {
           fromMetadata = fromMetadata.withChecksumFromFile(video);
@@ -117,8 +118,11 @@ public record Downloader(
       }
       // `fromMetadata == null` implies there's a breaking change in the format of the json,
       // we should always fix it.
-      var already = fromMetadata == null || isMetadataForSameSong(song, fromMetadata);
-      var needFixMetadata = fromMetadata == null || needFixMetadata(song, fromMetadata) || localMissingChecksum;
+      var already = fromMetadata == null
+        || isMetadataForSameSong(song, fromMetadata);
+      var needFixMetadata = fromMetadata == null
+        || needFixMetadata(song, fromMetadata)
+        || (!remoteMissingChecksum && localMissingChecksum);
       if (already && needFixMetadata) {
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
@@ -144,7 +148,8 @@ public record Downloader(
       || !Objects.equals(song.title(), fromMetadata.title())
       || !Objects.equals(song.titleSpell(), fromMetadata.titleSpell())
       || !Objects.equals(song.originalUrl(), fromMetadata.originalUrl())
-      || !Objects.equals(song.checksum(), fromMetadata.checksum())
+      // only patch local checksum if we have a reliable always-correct one from AyaDance
+      || (song.checksum() != null && !Objects.equals(song.checksum(), fromMetadata.checksum()))
       || fromMetadata.category() != song.category()
       || fromMetadata.start() != song.start()
       || fromMetadata.end() != song.end()
@@ -159,7 +164,10 @@ public record Downloader(
       return rawSong.withChecksumFromFile(video);
     }
     // TODO: fetch checksum from https://aya-dance-cf.kiva.moe/aya-api/v1/songs
-    throw new RuntimeException("TODO");
+    // Ok, the file is not found in the Aya Dance Index,
+    // we have no reliable source for the checksum, so we just return the raw song,
+    // and hope the user's network is good enough to download the video.
+    return rawSong;
   }
 
   public boolean downloadOne(@NotNull Song rawSong) {
@@ -167,7 +175,6 @@ public record Downloader(
     var video = basedir.resolve("video.mp4");
     var metadata = basedir.resolve("metadata.json");
     var downloadUrl = basedir.resolve("download.txt");
-
 
     try {
       var song = prepareSong(rawSong, metadata, video);
@@ -189,7 +196,7 @@ public record Downloader(
       var checkedSong = song.withChecksumFromFile(video);
 
       // the only case: checksum mismatch
-      if (needFixMetadata(song, checkedSong)) {
+      if (!needFixMetadata(song, checkedSong)) {
         saveMetadata(checkedSong, metadata);
         Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
         System.out.printf(
