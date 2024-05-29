@@ -17,6 +17,15 @@ public class AyaApi {
   }
 
   public static @NotNull ImmutableSeq<Song> parse() {
+    try {
+      return tryParse();
+    } catch (Throwable e) {
+      System.err.println("WARN: failed to fetch Aya Song Index, skipping checksum: " + e.getMessage());
+      return ImmutableSeq.empty();
+    }
+  }
+
+  public static @NotNull ImmutableSeq<Song> tryParse() {
     var html = PyPyApi.getHtml(API_URL);
     var apiSongs = new GsonBuilder().create()
       .fromJson(html, ApiSongList.class);
