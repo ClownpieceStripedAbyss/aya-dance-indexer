@@ -33,7 +33,8 @@ public record Downloader(
   @NotNull ExecutorService executor,
   @NotNull Sync sync,
   @NotNull HttpClient httpClient,
-  long delaySeconds
+  long delaySeconds,
+  boolean trustLocalFiles
 ) {
   private static @NotNull String jdApiForSong(int id) {
     return "https://jd.pypy.moe/api/v1/videos/%d.mp4".formatted(id);
@@ -50,7 +51,8 @@ public record Downloader(
     @NotNull ImmutableSeq<Song> songs,
     @NotNull String outputDir,
     long delaySeconds,
-    @Nullable InetSocketAddress proxy
+    @Nullable InetSocketAddress proxy,
+    boolean trustLocalFiles
   ) {
     var builder = HttpClient.newBuilder()
       .version(HttpClient.Version.HTTP_2);
@@ -59,7 +61,7 @@ public record Downloader(
     return new Downloader(songs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
-      client, delaySeconds);
+      client, delaySeconds, trustLocalFiles);
   }
 
   public void downloadAllMulti() {
@@ -91,19 +93,32 @@ public record Downloader(
     }
   }
 
-  private boolean alreadyDownloaded(@NotNull Song song, @NotNull Path metadata) {
+  private boolean shouldUseLocalFiles(@NotNull Path metadata, @NotNull Path video) {
+    return trustLocalFiles && Files.exists(metadata) && Files.exists(video);
+  }
+
+  private boolean alreadyDownloaded(@NotNull Song song, @NotNull Path metadata, @NotNull Path video) {
+    if (!Files.exists(video)) return false;
     if (!Files.exists(metadata)) return false;
     try {
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
       Song fromMetadata = null;
+      boolean localMissingChecksum = false;
       try {
         fromMetadata = new Gson().fromJson(contents, Song.class);
+        localMissingChecksum = fromMetadata.checksum() == null;
+        // fast-path: song.checksum() is already computed from the video file
+        if (shouldUseLocalFiles(metadata, video) && song.checksum() != null) {
+          fromMetadata = fromMetadata.withChecksum(song.checksum());
+        } else {
+          fromMetadata = fromMetadata.withChecksumFromFile(video);
+        }
       } catch (Throwable ignored) {
       }
       // `fromMetadata == null` implies there's a breaking change in the format of the json,
       // we should always fix it.
       var already = fromMetadata == null || isMetadataForSameSong(song, fromMetadata);
-      var needFixMetadata = fromMetadata == null || needFixMetadata(song, fromMetadata);
+      var needFixMetadata = fromMetadata == null || needFixMetadata(song, fromMetadata) || localMissingChecksum;
       if (already && needFixMetadata) {
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
@@ -129,6 +144,7 @@ public record Downloader(
       || !Objects.equals(song.title(), fromMetadata.title())
       || !Objects.equals(song.titleSpell(), fromMetadata.titleSpell())
       || !Objects.equals(song.originalUrl(), fromMetadata.originalUrl())
+      || !Objects.equals(song.checksum(), fromMetadata.checksum())
       || fromMetadata.category() != song.category()
       || fromMetadata.start() != song.start()
       || fromMetadata.end() != song.end()
@@ -137,14 +153,26 @@ public record Downloader(
       || fromMetadata.volume() != song.volume();
   }
 
-  public boolean downloadOne(@NotNull Song song) {
-    var basedir = Path.of(outputDir, String.valueOf(song.id()));
+  private @NotNull Song prepareSong(@NotNull Song rawSong, @NotNull Path metadata, @NotNull Path video) {
+    // trustLocalFiles should only be used by Kiva for bootstrapping aya-dance-cf.kiva.moe
+    if (shouldUseLocalFiles(metadata, video)) {
+      return rawSong.withChecksumFromFile(video);
+    }
+    // TODO: fetch checksum from https://aya-dance-cf.kiva.moe/aya-api/v1/songs
+    throw new RuntimeException("TODO");
+  }
+
+  public boolean downloadOne(@NotNull Song rawSong) {
+    var basedir = Path.of(outputDir, String.valueOf(rawSong.id()));
     var video = basedir.resolve("video.mp4");
     var metadata = basedir.resolve("metadata.json");
     var downloadUrl = basedir.resolve("download.txt");
 
+
     try {
-      if (alreadyDownloaded(song, metadata)) {
+      var song = prepareSong(rawSong, metadata, video);
+
+      if (alreadyDownloaded(song, metadata, video)) {
         System.out.printf("[%d/%d] Skipping id: %d, name: %s, already downloaded%n",
           sync.current(), sync.total,
           song.id(), song.title());
@@ -158,15 +186,26 @@ public record Downloader(
 
       Files.createDirectories(basedir);
       var videoUrl = downloadVideoFromCDN(song.id(), video);
-      saveMetadata(song, metadata);
-      Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
-      System.out.printf(
-        "[%d/%d] OK id: %d, name: %s, from: %s%n",
-        sync.current(), sync.total, song.id(), song.title(), videoUrl
-      );
+      var checkedSong = song.withChecksumFromFile(video);
+
+      // the only case: checksum mismatch
+      if (needFixMetadata(song, checkedSong)) {
+        saveMetadata(checkedSong, metadata);
+        Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
+        System.out.printf(
+          "[%d/%d] OK id: %d, name: %s, from: %s%n",
+          sync.current(), sync.total, checkedSong.id(), checkedSong.title(), videoUrl
+        );
+      } else {
+        System.err.printf(
+          "[%d/%d] ERROR id: %d, name: %s, checksum mismatch%n",
+          sync.current(), sync.total, song.id(), song.title()
+        );
+        markFailed(rawSong);
+      }
     } catch (Exception e) {
-      System.err.printf("ERROR: Failed to download song %d: %s%n", song.id(), e.getMessage());
-      markFailed(song);
+      System.err.printf("ERROR: Failed to download song %d: %s%n", rawSong.id(), e.getMessage());
+      markFailed(rawSong);
     } finally {
       sync.increment();
     }

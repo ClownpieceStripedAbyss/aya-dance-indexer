@@ -5,7 +5,13 @@ import com.github.houbb.pinyin.util.PinyinHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.List;
 
 public record Song(
@@ -22,7 +28,8 @@ public record Song(
   int end,
   boolean flip,
   boolean skipRandom,
-  @Nullable List<String> originalUrl
+  @Nullable List<String> originalUrl,
+  @Nullable String checksum
 ) {
   public static @NotNull String spell(@NotNull String name) {
     try {
@@ -32,5 +39,41 @@ public record Song(
     } catch (Throwable t) {
       return name;
     }
+  }
+
+  public @NotNull Song withChecksumFromFile(@NotNull Path file) {
+    // compute MD5 checksum with file content
+    try {
+      var messageDigest = MessageDigest.getInstance("MD5");
+      messageDigest.update(Files.readAllBytes(file));
+      var checksum = HexFormat.of().formatHex(messageDigest.digest());
+      return withChecksum(checksum);
+    } catch (NoSuchAlgorithmException ignored) {
+      // should not happen
+      return this;
+    } catch (IOException e) {
+      System.out.println("WARN: withChecksumFromFile IOE: " + file + ": " + e.getMessage());
+      return this;
+    }
+  }
+
+  public @NotNull Song withChecksum(@NotNull String checksum) {
+    return new Song(
+      id,
+      category,
+      title,
+      categoryName,
+      url,
+      urlForQuest,
+      titleSpell,
+      playerIndex,
+      volume,
+      start,
+      end,
+      flip,
+      skipRandom,
+      originalUrl,
+      checksum
+    );
   }
 }

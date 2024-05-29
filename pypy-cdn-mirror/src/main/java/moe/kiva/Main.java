@@ -20,7 +20,9 @@ public class Main {
   record AppOpts(
     @NotNull String outputDir,
     @Nullable InetSocketAddress proxy,
-    int downloadDelay
+    int downloadDelay,
+    boolean trustLocalFiles,
+    boolean generateVidViz
   ) {
     public static @NotNull AppOpts parseEnv() {
       try {
@@ -30,13 +32,17 @@ public class Main {
 
         var mirrorDownloadProxy = p.getProperty("MIRROR_DOWNLOAD_PROXY", "");
         var videoPath = p.getProperty("VIDEO_PATH", "./pypydance-song");
+        var trustLocalFiles = Boolean.parseBoolean(p.getProperty("TRUST_LOCAL_FILES", "false"));
+        var generateVidViz = Boolean.parseBoolean(p.getProperty("GENERATE_VIDVIZ_JSON", "true"));
         var mirrorDownloadDelay = p.getProperty("MIRROR_DOWNLOAD_DELAY", "30");
 
         if (mirrorDownloadProxy.isBlank()) {
           return new AppOpts(
             videoPath,
             null,
-            Integer.parseInt(mirrorDownloadDelay)
+            Integer.parseInt(mirrorDownloadDelay),
+            trustLocalFiles,
+            generateVidViz
           );
         }
 
@@ -49,10 +55,12 @@ public class Main {
         return new AppOpts(
           videoPath,
           new InetSocketAddress(proxyHost, proxyPort),
-          Integer.parseInt(mirrorDownloadDelay)
+          Integer.parseInt(mirrorDownloadDelay),
+          trustLocalFiles,
+          generateVidViz
         );
       } catch (IOException e) {
-        return new AppOpts("./pypydance-song", null, 30);
+        return new AppOpts("./pypydance-song", null, 30, false, false);
       }
     }
   }
@@ -66,15 +74,19 @@ public class Main {
     var songList = PyPyApi.parse();
 
     downloadVideos(opts, songList);
-    generateVidViz(songList);
+    if (opts.generateVidViz) generateVidViz(songList);
   }
 
   private static void downloadVideos(@NotNull AppOpts opts, @NotNull ImmutableSeq<Song> songList) {
+    if (opts.trustLocalFiles) {
+      System.out.println("Trust local files enabled, but if you're not sure, please disable it.");
+    }
     var downloader = Downloader.create(
       songList,
       opts.outputDir,
       opts.downloadDelay,
-      opts.proxy
+      opts.proxy,
+      opts.trustLocalFiles
     );
     downloader.downloadAllMulti();
   }
