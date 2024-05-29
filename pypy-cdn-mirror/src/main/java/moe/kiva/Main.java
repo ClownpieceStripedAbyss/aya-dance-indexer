@@ -72,17 +72,19 @@ public class Main {
     System.out.printf("Download delay: %d%n", opts.downloadDelay);
 
     var songList = PyPyApi.parse();
+    var ayaSongList = AyaApi.parse();
 
-    downloadVideos(opts, songList);
+    downloadVideos(opts, songList, ayaSongList);
     if (opts.generateVidViz) generateVidViz(songList);
   }
 
-  private static void downloadVideos(@NotNull AppOpts opts, @NotNull ImmutableSeq<Song> songList) {
+  private static void downloadVideos(@NotNull AppOpts opts, @NotNull ImmutableSeq<Song> songList, @NotNull ImmutableSeq<Song> ayaSongList) {
     if (opts.trustLocalFiles) {
       System.out.println("Trust local files enabled, but if you're not sure, please disable it.");
     }
     var downloader = Downloader.create(
       songList,
+      ayaSongList,
       opts.outputDir,
       opts.downloadDelay,
       opts.proxy,

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 public record Downloader(
   @NotNull ImmutableSeq<Song> songs,
+  @NotNull ImmutableSeq<Song> ayaSongs,
   @NotNull MutableList<Song> failed,
   @NotNull String outputDir,
   @NotNull ExecutorService executor,
@@ -49,6 +50,7 @@ public record Downloader(
 
   public static @NotNull Downloader create(
     @NotNull ImmutableSeq<Song> songs,
+    @NotNull ImmutableSeq<Song> ayaSongs,
     @NotNull String outputDir,
     long delaySeconds,
     @Nullable InetSocketAddress proxy,
@@ -58,7 +60,7 @@ public record Downloader(
       .version(HttpClient.Version.HTTP_2);
     if (proxy != null) builder.proxy(ProxySelector.of(proxy));
     var client = builder.build();
-    return new Downloader(songs, MutableList.create(), outputDir,
+    return new Downloader(songs, ayaSongs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
       client, delaySeconds, trustLocalFiles);
@@ -163,11 +165,11 @@ public record Downloader(
     if (shouldUseLocalFiles(metadata, video)) {
       return rawSong.withChecksumFromFile(video);
     }
-    // TODO: fetch checksum from https://aya-dance-cf.kiva.moe/aya-api/v1/songs
+    var ayaSong = ayaSongs.findFirst(s -> s.id() == rawSong.id());
     // Ok, the file is not found in the Aya Dance Index,
     // we have no reliable source for the checksum, so we just return the raw song,
     // and hope the user's network is good enough to download the video.
-    return rawSong;
+    return ayaSong.getOrElse(() -> rawSong);
   }
 
   public boolean downloadOne(@NotNull Song rawSong) {
