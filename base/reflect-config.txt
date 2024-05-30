@@ -1,8 +1,4 @@
 moe.kiva.Song
-moe.kiva.PyPyApi$ApiSong
-moe.kiva.PyPyApi$ApiSongList
-moe.kiva.AyaApi$ApiSongList
-moe.kiva.Song
 moe.kiva.SongList
 
 # pinyin

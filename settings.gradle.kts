@@ -7,5 +7,6 @@ dependencyResolutionManagement {
 }
 
 include(
-  "pypy-cdn-mirror",
+  "base",
+  "mirror",
 )

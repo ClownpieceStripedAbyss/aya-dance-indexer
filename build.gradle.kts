@@ -8,7 +8,7 @@ plugins {
   `java-library`
   `maven-publish`
   signing
-  id("org.beryx.jlink") version "2.26.0" apply false
+  alias(libs.plugins.jlink) apply false
 }
 
 var projectVersion: String by rootProject.ext
@@ -49,7 +49,7 @@ allprojects {
   version = projectVersion
 }
 
-val useJacoco = listOf("")
+val useJacoco = listOf("base", "mirror")
 
 /** gradle.properties or environmental variables */
 fun propOrEnv(name: String): String =
@@ -111,7 +111,7 @@ subprojects {
       tree.forEach {
         BuildUtil.stripPreview(
           root.toPath(), it.toPath(),
-          true, false,
+          false, false,
           "java/lang/RuntimeException",
         )
       }
@@ -161,16 +161,14 @@ subprojects {
   val ossrhUsername = propOrEnv("ossrhUsername")
   val ossrhPassword = propOrEnv("ossrhPassword")
 
-  if (ossrhUsername.isNotEmpty()) publishing.repositories {
-    maven {
-      val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-      val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-      url = if (isRelease) releasesRepoUrl else snapshotsRepoUrl
-      name = "MavenCentral"
-      credentials {
-        username = ossrhUsername
-        password = ossrhPassword
-      }
+  if (ossrhUsername.isNotEmpty()) publishing.repositories.maven {
+    val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+    val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    url = if (isRelease) releasesRepoUrl else snapshotsRepoUrl
+    name = "MavenCentral"
+    credentials {
+      username = ossrhUsername
+      password = ossrhPassword
     }
   }
 

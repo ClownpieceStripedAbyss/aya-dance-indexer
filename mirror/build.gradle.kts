@@ -16,7 +16,7 @@ dependencies {
   implementation(libs.gson)
   implementation(libs.jsoup)
 
-  implementation("com.github.houbb:pinyin:0.4.0")
+  implementation(project(":base"))
 
   testImplementation(libs.junit.params)
   testImplementation(libs.junit.jupiter)
