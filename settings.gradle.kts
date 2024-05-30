@@ -8,5 +8,6 @@ dependencyResolutionManagement {
 
 include(
   "base",
+  "indexer",
   "mirror",
 )
