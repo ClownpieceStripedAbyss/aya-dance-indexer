@@ -179,7 +179,7 @@ subprojects {
 
   publishing.publications {
     create<MavenPublication>("maven") {
-      val githubUrl = "https://github.com/ClownpieceStripedAbyss/pypy-cdn-mirror"
+      val githubUrl = "https://github.com/ClownpieceStripedAbyss/aya-dance-indexer"
       groupId = proj.group.toString()
       version = proj.version.toString()
       artifactId = proj.name

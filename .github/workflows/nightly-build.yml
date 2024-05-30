@@ -100,7 +100,7 @@ jobs:
           arguments: nativeCompile --no-daemon --stacktrace --warning-mode all
 
       - name: Copy Native Image
-        run: cp ./pypy-cdn-mirror/build/native/nativeCompile/pypy-cdn-mirror${{ matrix.binaryExt }} ./${{ env.nativeName }}
+        run: cp ./mirror/build/native/nativeCompile/pypy-cdn-mirror${{ matrix.binaryExt }} ./${{ env.nativeName }}
 
       - name: Checksum (Native, Unix)
         run: shasum -a 256 ./${{ env.nativeName }} > ./${{ env.nativeSha256 }}
@@ -127,7 +127,7 @@ jobs:
       - name: Copy fat jar
         if: matrix.os == 'ubuntu-latest'
         run: |
-          cp ./pypy-cdn-mirror/build/libs/*-fat.jar ./pypy-cdn-mirror-fatjar.jar
+          cp ./mirror/build/libs/*-fat.jar ./pypy-cdn-mirror-fatjar.jar
 
       - name: Update Release (jars)
         uses: Xotl/cool-github-releases@v1
