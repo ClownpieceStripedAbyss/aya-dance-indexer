@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import kala.collection.immutable.ImmutableSeq;
 import kala.collection.mutable.MutableList;
+import kala.control.Try;
 import kala.value.primitive.IntVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -104,20 +105,13 @@ public record Downloader(
     if (!Files.exists(metadata)) return false;
     try {
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
-      Song fromMetadata = null;
-      String localChecksum = null;
+      var fromMetadata = Try.of(() -> new Gson().fromJson(contents, Song.class)).getOrNull();
 
-      try {
-        fromMetadata = new Gson().fromJson(contents, Song.class);
-      } catch (Throwable ignored) {
-      }
-
-      // fast-path: song.checksum() is already computed from the video file
-      if (shouldTrustLocalFiles(metadata, video) && song.checksum() != null) {
-        localChecksum = song.checksum();
-      } else {
-        localChecksum = Song.computeChecksum(video);
-      }
+      var localChecksum = shouldTrustLocalFiles(metadata, video) && song.checksum() != null
+        // fast-path: song.checksum() is already computed from the local file, see `prepareSong`
+        ? song.checksum()
+        // slow-path: song.checksum() is obtained from AyaDance, so we need to compute locally.
+        : Song.computeChecksum(video);
 
       // `fromMetadata == null` implies there's a breaking change in the format of the json,
       // we should always fix it.
