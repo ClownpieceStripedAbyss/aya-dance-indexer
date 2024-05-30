@@ -3,6 +3,7 @@ import org.aya.gradle.CommonTasks
 val mainClassQName = project.group.toString() + ".Main"
 CommonTasks.fatJar(project, mainClassQName)
 CommonTasks.nativeImageConfig(project)
+application.mainClass.set(mainClassQName)
 
 plugins {
   id("org.graalvm.buildtools.native")
