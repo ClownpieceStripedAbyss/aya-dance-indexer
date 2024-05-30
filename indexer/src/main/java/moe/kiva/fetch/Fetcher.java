@@ -14,7 +14,12 @@ public interface Fetcher {
   static @Nullable SongMetadata fetchMetadata(@NotNull SongInput input) {
     for (Fetcher fetcher : FETCHERS) {
       if (fetcher.canFetch(input.originalUrl())) {
-        return fetcher.computeMetadata(input).getOrNull();
+        var x = fetcher.computeMetadata(input);
+        if (x.isErr()) {
+          System.out.println("Error fetching metadata: ");
+          x.getErr().printStackTrace(System.err);
+        }
+        return x.getOrNull();
       }
     }
     return null;

@@ -15,11 +15,15 @@ public class Main {
 
     var input = parseSongInput(args);
     var x = Fetcher.fetchMetadata(input);
+    if (x == null) {
+      System.err.println("Failed to fetch metadata");
+      System.exit(1);
+    }
 
     var json = new GsonBuilder()
       .setPrettyPrinting()
       .create()
-      .toJson(x);
+      .toJson(x.song());
     System.out.println(json);
   }
 
