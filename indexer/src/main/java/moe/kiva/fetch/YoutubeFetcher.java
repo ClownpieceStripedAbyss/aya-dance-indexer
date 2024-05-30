@@ -3,18 +3,12 @@ package moe.kiva.fetch;
 import moe.kiva.ApiHelper;
 import moe.kiva.Song;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
 
 import java.util.List;
 
 public enum YoutubeFetcher implements Fetcher {
   INSTANCE;
-
-  static @Nullable String extractVideoId(@NotNull String url) {
-    var index = url.indexOf("v=");
-    return index == -1 ? null : url.substring(index + 2);
-  }
 
   @Override public boolean canFetch(@NotNull String url) {
     return url.startsWith("https://youtube.com/watch?v=")
