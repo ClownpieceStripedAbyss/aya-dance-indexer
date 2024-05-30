@@ -1,4 +1,4 @@
-rootProject.name = "pypy-cdn-mirror"
+rootProject.name = "aya-dance-indexer"
 
 dependencyResolutionManagement {
   @Suppress("UnstableApiUsage") repositories {
