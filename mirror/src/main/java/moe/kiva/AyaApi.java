@@ -26,7 +26,7 @@ public class AyaApi {
   }
 
   public static @NotNull ImmutableSeq<Song> tryParse() {
-    var html = PyPyApi.getHtml(API_URL);
+    var html = ApiHelper.getHtml(API_URL);
     var apiSongs = new GsonBuilder().create()
       .fromJson(html, ApiSongList.class);
     return apiSongs.categories
