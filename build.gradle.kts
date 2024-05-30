@@ -158,6 +158,18 @@ subprojects {
     enableAssertions = true
   }
 
+  // Don't know why this manual dependency setting is needed, but it is.
+  // I believe the jar task should depends on its dependencies' jar tasks automatically, but it doesn't.
+  // In the past 2 years, the task without this line has been working fine, but today it suddenly broke.
+  tasks.withType<Jar>().configureEach {
+    proj.configurations.implementation.get().dependencies.withType<ProjectDependency>().forEach {
+      val itProj = it.dependencyProject
+      val itJar = itProj.tasks.named("jar")
+      println("Adding task dependency :${itProj.name}:${itJar.name} to task :${proj.name}:$name")
+      dependsOn(itJar)
+    }
+  }
+
   val ossrhUsername = propOrEnv("ossrhUsername")
   val ossrhPassword = propOrEnv("ossrhPassword")
 

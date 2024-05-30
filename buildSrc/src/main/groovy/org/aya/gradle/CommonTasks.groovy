@@ -5,6 +5,7 @@ package org.aya.gradle
 import org.graalvm.buildtools.gradle.dsl.GraalVMExtension
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.gradle.api.Project
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.jvm.tasks.Jar
@@ -78,7 +79,7 @@ final class CommonTasks {
       from project.configurations.runtimeClasspath.collect {
         if (it.isDirectory()) it else project.zipTree(it)
       }
-      duplicatesStrategy = DuplicatesStrategy.INCLUDE
+      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
       exclude '**/module-info.class'
       exclude '*.html'
       exclude 'META-INF/ECLIPSE_.*'
@@ -90,6 +91,15 @@ final class CommonTasks {
       dependsOn(jar)
       //noinspection GroovyAssignabilityCheck
       with jar
+      // Don't know why this manual dependency setting is needed, but it is.
+      // I believe the jar task should depends on its dependencies' jar tasks automatically, but it doesn't.
+      // In the past 2 years, the task without this line has been working fine, but today it suddenly broke.
+      project.configurations.named("implementation").get().dependencies.withType(ProjectDependency).forEach {
+        var itProj = it.dependencyProject
+        var itJar = itProj.tasks.named("jar")
+        println("Adding task dependency :${itProj.name}:${itJar.name} to task :${project.name}:fatJar")
+        dependsOn(itJar)
+      }
     }
   }
 }
