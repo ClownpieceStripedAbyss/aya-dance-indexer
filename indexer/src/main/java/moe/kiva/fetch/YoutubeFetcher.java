@@ -56,7 +56,7 @@ public enum YoutubeFetcher implements Fetcher {
         input.flip(),
         false,
         List.of(input.originalUrl()),
-        "checksum"
+        "CHECKSUM-PLACEHOLDER"
       ),
       input.originalUrl()
     );
