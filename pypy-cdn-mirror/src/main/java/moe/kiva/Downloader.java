@@ -95,7 +95,7 @@ public record Downloader(
     }
   }
 
-  private boolean shouldUseLocalFiles(@NotNull Path metadata, @NotNull Path video) {
+  private boolean shouldTrustLocalFiles(@NotNull Path metadata, @NotNull Path video) {
     return trustLocalFiles && Files.exists(metadata) && Files.exists(video);
   }
 
@@ -105,26 +105,35 @@ public record Downloader(
     try {
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
       Song fromMetadata = null;
-      boolean localMissingChecksum = false;
-      boolean remoteMissingChecksum = song.checksum() == null;
+      String localChecksum = null;
+
       try {
         fromMetadata = new Gson().fromJson(contents, Song.class);
-        localMissingChecksum = fromMetadata.checksum() == null;
-        // fast-path: song.checksum() is already computed from the video file
-        if (shouldUseLocalFiles(metadata, video) && !remoteMissingChecksum) {
-          fromMetadata = fromMetadata.withChecksum(song.checksum());
-        } else {
-          fromMetadata = fromMetadata.withChecksumFromFile(video);
-        }
       } catch (Throwable ignored) {
       }
+
+      // fast-path: song.checksum() is already computed from the video file
+      if (shouldTrustLocalFiles(metadata, video) && song.checksum() != null) {
+        localChecksum = song.checksum();
+      } else {
+        localChecksum = Song.computeChecksum(video);
+      }
+
       // `fromMetadata == null` implies there's a breaking change in the format of the json,
       // we should always fix it.
       var already = fromMetadata == null
         || isMetadataForSameSong(song, fromMetadata);
       var needFixMetadata = fromMetadata == null
-        || needFixMetadata(song, fromMetadata)
-        || (!remoteMissingChecksum && localMissingChecksum);
+        || needFixMetadata(song, fromMetadata);
+      var checksumMismatch = song.checksum() != null
+        && !Objects.equals(song.checksum(), localChecksum);
+
+      if (already && checksumMismatch) {
+        System.out.printf("WARN: Checksum mismatch for song: %d, name: %s, deleting %n", song.id(), song.title());
+        Files.deleteIfExists(video);
+        Files.deleteIfExists(metadata);
+        return false;
+      }
       if (already && needFixMetadata) {
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
@@ -162,14 +171,17 @@ public record Downloader(
 
   private @NotNull Song prepareSong(@NotNull Song rawSong, @NotNull Path metadata, @NotNull Path video) {
     // trustLocalFiles should only be used by Kiva for bootstrapping aya-dance-cf.kiva.moe
-    if (shouldUseLocalFiles(metadata, video)) {
+    if (shouldTrustLocalFiles(metadata, video)) {
       return rawSong.withChecksumFromFile(video);
     }
     var ayaSong = ayaSongs.findFirst(s -> s.id() == rawSong.id());
     // Ok, the file is not found in the Aya Dance Index,
     // we have no reliable source for the checksum, so we just return the raw song,
     // and hope the user's network is good enough to download the video.
-    return ayaSong.getOrElse(() -> rawSong);
+    return ayaSong.getOrElse(() -> {
+      System.err.printf("WARN: No reliable source for checksum for id: %d, name: %s%n", rawSong.id(), rawSong.title());
+      return rawSong;
+    });
   }
 
   public boolean downloadOne(@NotNull Song rawSong) {
@@ -197,9 +209,8 @@ public record Downloader(
       var videoUrl = downloadVideoFromCDN(song.id(), video);
       var checkedSong = song.withChecksumFromFile(video);
 
-      // the only case: checksum mismatch
-      if (!needFixMetadata(song, checkedSong)) {
-        saveMetadata(checkedSong, metadata);
+      if (song.checksum() == null || Objects.equals(song.checksum(), checkedSong.checksum())) {
+        saveMetadata(song, metadata);
         Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
         System.out.printf(
           "[%d/%d] OK id: %d, name: %s, from: %s%n",
@@ -207,8 +218,9 @@ public record Downloader(
         );
       } else {
         System.err.printf(
-          "[%d/%d] ERROR id: %d, name: %s, checksum mismatch%n",
-          sync.current(), sync.total, song.id(), song.title()
+          "[%d/%d] ERROR id: %d, name: %s, checksum mismatch: from remote: %s, from local: %s%n",
+          sync.current(), sync.total, song.id(), song.title(),
+          song.checksum(), checkedSong.checksum()
         );
         markFailed(rawSong);
       }

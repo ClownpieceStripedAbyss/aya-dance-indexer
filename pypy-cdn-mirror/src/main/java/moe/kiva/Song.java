@@ -19,8 +19,8 @@ public record Song(
   int category,
   @NotNull String title,
   @NotNull String categoryName,
-  @NotNull String url,
-  @NotNull String urlForQuest,
+  @Nullable String url,
+  @Nullable String urlForQuest,
   @NotNull String titleSpell,
   int playerIndex,
   float volume,
@@ -41,20 +41,23 @@ public record Song(
     }
   }
 
-  public @NotNull Song withChecksumFromFile(@NotNull Path file) {
-    // compute MD5 checksum with file content
+  public static @Nullable String computeChecksum(@NotNull Path file) {
     try {
       var messageDigest = MessageDigest.getInstance("MD5");
       messageDigest.update(Files.readAllBytes(file));
-      var checksum = HexFormat.of().formatHex(messageDigest.digest());
-      return withChecksum(checksum);
+      return HexFormat.of().formatHex(messageDigest.digest());
     } catch (NoSuchAlgorithmException ignored) {
       // should not happen
-      return this;
+      return null;
     } catch (IOException e) {
-      System.out.println("WARN: withChecksumFromFile IOE: " + file + ": " + e.getMessage());
-      return this;
+      System.out.println("WARN: checksumForFile IOE: " + file + ": " + e.getMessage());
+      return null;
     }
+  }
+
+  public @NotNull Song withChecksumFromFile(@NotNull Path file) {
+    var c = computeChecksum(file);
+    return c == null ? this : withChecksum(c);
   }
 
   public @NotNull Song withChecksum(@NotNull String checksum) {
