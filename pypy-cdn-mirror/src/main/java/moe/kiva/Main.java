@@ -33,7 +33,7 @@ public class Main {
         var mirrorDownloadProxy = p.getProperty("MIRROR_DOWNLOAD_PROXY", "");
         var videoPath = p.getProperty("VIDEO_PATH", "./pypydance-song");
         var trustLocalFiles = Boolean.parseBoolean(p.getProperty("TRUST_LOCAL_FILES", "false"));
-        var generateVidViz = Boolean.parseBoolean(p.getProperty("GENERATE_VIDVIZ_JSON", "true"));
+        var generateVidViz = Boolean.parseBoolean(p.getProperty("GENERATE_VIDVIZ_JSON", "false"));
         var mirrorDownloadDelay = p.getProperty("MIRROR_DOWNLOAD_DELAY", "30");
 
         if (mirrorDownloadProxy.isBlank()) {
@@ -72,7 +72,7 @@ public class Main {
     System.out.printf("Download delay: %d%n", opts.downloadDelay);
 
     var songList = PyPyApi.parse();
-    var ayaSongList = AyaApi.parse();
+    var ayaSongList = opts.trustLocalFiles ? ImmutableSeq.<Song>empty() : AyaApi.parse();
 
     downloadVideos(opts, songList, ayaSongList);
     if (opts.generateVidViz) generateVidViz(songList);
