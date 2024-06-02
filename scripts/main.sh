@@ -34,3 +34,6 @@ bash ./fetch-video.sh "$YOUTUBE_URL" "$AYA_ID" "$AYA_CAT_ID" "$AYA_CAT_NAME" "./
 
 echo ":: Uploading to staging area..."
 bash ./upload-video.sh "staging_$AYA_ID" "$AYA_ID"
+
+echo ":: Cleaning up..."
+rm -rf "staging_$AYA_ID"
