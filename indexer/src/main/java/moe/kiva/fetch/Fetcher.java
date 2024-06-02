@@ -12,6 +12,17 @@ public interface Fetcher {
   );
 
   static @Nullable SongMetadata fetchMetadata(@NotNull SongInput input) {
+    var metadata = doFetchMetadata(input);
+    if (metadata == null) return null;
+    for (SongMetadataMapper mapper : SongMetadataMapper.MAPPERS) {
+      if (mapper.shouldWorkOn(metadata)) {
+        metadata = mapper.mapMetadata(metadata);
+      }
+    }
+    return metadata;
+  }
+
+  private static @Nullable SongMetadata doFetchMetadata(@NotNull SongInput input) {
     for (Fetcher fetcher : FETCHERS) {
       if (fetcher.canFetch(input.originalUrl())) {
         var x = fetcher.computeMetadata(input);

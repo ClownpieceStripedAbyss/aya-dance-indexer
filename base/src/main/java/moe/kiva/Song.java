@@ -60,6 +60,26 @@ public record Song(
     return c == null ? this : withChecksum(c);
   }
 
+  public @NotNull Song withTitle(@NotNull String title) {
+    return new Song(
+      id,
+      category,
+      title,
+      categoryName,
+      url,
+      urlForQuest,
+      Song.spell(title),
+      playerIndex,
+      volume,
+      start,
+      end,
+      flip,
+      skipRandom,
+      originalUrl,
+      checksum
+    );
+  }
+
   public @NotNull Song withChecksum(@NotNull String checksum) {
     return new Song(
       id,
