@@ -28,15 +28,16 @@ if [[ -z "$YT_DLP" ]]; then
   fi
 fi
 
-mkdir -p "$AYA_ID"
+OUT_DIR="staging_$AYA_ID"
+mkdir -p "$OUT_DIR"
 
 $YT_DLP --no-check-certificate \
   --no-cache-dir \
   --rm-cache-dir \
   -f "(mp4/best)[height<=?2160][height>=?256][width>=?256]" \
-  -o "$AYA_ID/video.mp4" \
+  -o "$OUT_DIR/video.mp4" \
   "$YOUTUBE_URL"
-MD5SUM=$(md5sum "$AYA_ID/video.mp4" | cut -d' ' -f1)
+MD5SUM=$(md5sum "$OUT_DIR/video.mp4" | cut -d' ' -f1)
 java -jar "$INDEXER_JAR" "$YOUTUBE_URL" "$AYA_ID" "$AYA_CAT_ID" "$AYA_CAT_NAME" \
   | sed "s/CHECKSUM-PLACEHOLDER/$MD5SUM/g" \
-  | tee "$AYA_ID/metadata.json"
+  | tee "$OUT_DIR/metadata.json"

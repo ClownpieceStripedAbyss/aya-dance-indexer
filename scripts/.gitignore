@@ -1,3 +1,6 @@
 indexer.jar
 yt-dlp
-[\d]+/
+
+metadata.json
+video.mp4
+staging_*/
