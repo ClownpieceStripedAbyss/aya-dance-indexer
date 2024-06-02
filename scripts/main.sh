@@ -29,7 +29,7 @@ AYA_ID=$(bash ./find-available-id.sh)
 echo "Available ID: $AYA_ID"
 
 echo ":: Fetching video with ID $AYA_ID..."
-rm -f "$AYA_ID"
+rm -rf "staging_$AYA_ID"
 bash ./fetch-video.sh "$YOUTUBE_URL" "$AYA_ID" "$AYA_CAT_ID" "$AYA_CAT_NAME" "./indexer.jar" "./yt-dlp"
 
 echo ":: Uploading to staging area..."
