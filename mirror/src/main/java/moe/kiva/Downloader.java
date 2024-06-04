@@ -96,10 +96,6 @@ public record Downloader(
     }
   }
 
-  private boolean shouldTrustLocalFiles(@NotNull Path metadata, @NotNull Path video) {
-    return trustLocalFiles && Files.exists(metadata) && Files.exists(video);
-  }
-
   private boolean alreadyDownloaded(@NotNull Song song, @NotNull Path metadata, @NotNull Path video) {
     if (!Files.exists(video)) return false;
     if (!Files.exists(metadata)) return false;
@@ -107,7 +103,7 @@ public record Downloader(
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
       var fromMetadata = Try.of(() -> new Gson().fromJson(contents, Song.class)).getOrNull();
 
-      var localChecksum = shouldTrustLocalFiles(metadata, video) && song.checksum() != null
+      var localChecksum = trustLocalFiles && song.checksum() != null
         // fast-path: song.checksum() is already computed from the local file, see `prepareSong`
         ? song.checksum()
         // slow-path: song.checksum() is obtained from AyaDance, so we need to compute locally.
@@ -165,8 +161,11 @@ public record Downloader(
 
   private @NotNull Song prepareSong(@NotNull Song rawSong, @NotNull Path metadata, @NotNull Path video) {
     // trustLocalFiles should only be used by Kiva for bootstrapping aya-dance-cf.kiva.moe
-    if (shouldTrustLocalFiles(metadata, video)) {
-      return rawSong.withChecksumFromFile(video);
+    if (trustLocalFiles) {
+      if (Files.exists(metadata) && Files.exists(video))
+        return rawSong.withChecksumFromFile(video);
+      System.out.printf("[INFO] Hi Kiva, looks like this video id: %d, name: %s is not downloaded yet%n", rawSong.id(), rawSong.title());
+      return rawSong;
     }
     var ayaSong = ayaSongs.findFirst(s -> s.id() == rawSong.id());
     // Ok, the file is not found in the Aya Dance Index,
