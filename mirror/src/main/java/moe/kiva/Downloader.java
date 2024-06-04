@@ -204,7 +204,7 @@ public record Downloader(
       var checkedSong = song.withChecksumFromFile(video);
 
       if (song.checksum() == null || Objects.equals(song.checksum(), checkedSong.checksum())) {
-        saveMetadata(song, metadata);
+        saveMetadata(trustLocalFiles ? checkedSong : song, metadata);
         Files.writeString(downloadUrl, videoUrl, StandardCharsets.UTF_8);
         System.out.printf(
           "[%d/%d] OK id: %d, name: %s, from: %s%n",
