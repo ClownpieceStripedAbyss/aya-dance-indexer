@@ -45,7 +45,6 @@ public record Downloader(
   private static final @NotNull ImmutableSeq<String> CDN_LIST = ImmutableSeq.of(
     "http://storage-kr1.llss.io",
     "http://storage-kr2.llss.io",
-    "http://storage-kr3.llss.io",
     "http://storage-cf.llss.io"
   );
 
