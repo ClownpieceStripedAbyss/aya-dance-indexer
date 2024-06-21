@@ -26,7 +26,7 @@ public class AyaApi {
   }
 
   public static @NotNull ImmutableSeq<Song> tryParse(Main.@NotNull AppOpts opts) {
-    var html = ApiHelper.getHtml(API_URL, opts.proxy());
+    var html = ApiHelper.getHtml(API_URL, true, opts.proxy());
     var apiSongs = new GsonBuilder().create()
       .fromJson(html, ApiSongList.class);
     return apiSongs.categories
