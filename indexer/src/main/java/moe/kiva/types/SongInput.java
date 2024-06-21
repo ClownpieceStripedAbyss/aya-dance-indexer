@@ -17,11 +17,22 @@ public record SongInput(
   boolean flip,
 
   @NotNull Option<String> titleOverride,
+  @NotNull Option<String> titlePrefix,
+  @NotNull Option<String> titleSuffix,
+  @NotNull Option<String> titleContentRemove,
   @NotNull Option<Integer> startOverride,
   @NotNull Option<Integer> endOverride
 ) {
-  public @NotNull SongMetadata toMetadata(@NotNull Supplier<String> titleFetcher, IntSupplier durationInSecondsFetcher) {
-    var title = this.titleOverride().getOrElse(titleFetcher);
+  public @NotNull SongMetadata toMetadata(@NotNull Supplier<String> titleFetcher, @NotNull IntSupplier durationInSecondsFetcher) {
+    // If titleOverride is present, use it directly and skip all title mappers
+    var title = this.titleOverride().getOrElse(() -> {
+      var mappedTitle = titleFetcher.get();
+      // Remove content first, or we may mistakenly remove some prefix or suffix
+      if (this.titleContentRemove().isDefined()) mappedTitle = mappedTitle.replace(this.titleContentRemove().get(), "");
+      if (this.titlePrefix().isDefined()) mappedTitle = this.titlePrefix().get() + " " + mappedTitle;
+      if (this.titleSuffix().isDefined()) mappedTitle = mappedTitle + " " + this.titleSuffix().get();
+      return mappedTitle.trim();
+    });
     var end = this.endOverride().getOrElse(durationInSecondsFetcher::getAsInt);
     var spell = Song.spell(title);
 

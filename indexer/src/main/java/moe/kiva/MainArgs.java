@@ -64,6 +64,24 @@ public class MainArgs {
   public String titleOverride;
 
   @CommandLine.Option(
+    names = {"--title-prefix"},
+    description = "Title prefix of the video"
+  )
+  public String titlePrefix;
+
+  @CommandLine.Option(
+    names = {"--title-suffix"},
+    description = "Title suffix of the video"
+  )
+  public String titleSuffix;
+
+  @CommandLine.Option(
+    names = {"--title-remove"},
+    description = "Remove this content from title"
+  )
+  public String titleContentRemove;
+
+  @CommandLine.Option(
     names = {"-s", "--start-override"},
     description = "Start override of the video",
     paramLabel = "<integer>"

@@ -24,6 +24,9 @@ public class Main extends MainArgs implements Callable<Integer> {
       args.volume,
       args.flip,
       Option.ofNullable(args.titleOverride),
+      Option.ofNullable(args.titlePrefix),
+      Option.ofNullable(args.titleSuffix),
+      Option.ofNullable(args.titleContentRemove),
       Option.ofNullable(args.startOverride),
       Option.ofNullable(args.endOverride)
     );
