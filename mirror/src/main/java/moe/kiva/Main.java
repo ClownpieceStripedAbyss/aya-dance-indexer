@@ -17,7 +17,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class Main {
-  record AppOpts(
+  public record AppOpts(
     @NotNull String outputDir,
     @Nullable InetSocketAddress proxy,
     int downloadDelay,
@@ -71,8 +71,8 @@ public class Main {
     System.out.printf("Proxy: %s%n", opts.proxy);
     System.out.printf("Download delay: %d%n", opts.downloadDelay);
 
-    var songList = PyPyApi.parse();
-    var ayaSongList = opts.trustLocalFiles ? ImmutableSeq.<Song>empty() : AyaApi.parse();
+    var songList = PyPyApi.parse(opts);
+    var ayaSongList = opts.trustLocalFiles ? ImmutableSeq.<Song>empty() : AyaApi.parse(opts);
 
     downloadVideos(opts, songList, ayaSongList);
     if (opts.generateVidViz) generateVidViz(songList);

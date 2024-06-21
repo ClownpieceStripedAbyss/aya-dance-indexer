@@ -16,17 +16,17 @@ public class AyaApi {
   ) {
   }
 
-  public static @NotNull ImmutableSeq<Song> parse() {
+  public static @NotNull ImmutableSeq<Song> parse(@NotNull Main.AppOpts opts) {
     try {
-      return tryParse();
+      return tryParse(opts);
     } catch (Throwable e) {
       System.err.println("WARN: failed to fetch Aya Song Index, skipping checksum: " + e.getMessage());
       return ImmutableSeq.empty();
     }
   }
 
-  public static @NotNull ImmutableSeq<Song> tryParse() {
-    var html = ApiHelper.getHtml(API_URL);
+  public static @NotNull ImmutableSeq<Song> tryParse(Main.@NotNull AppOpts opts) {
+    var html = ApiHelper.getHtml(API_URL, opts.proxy());
     var apiSongs = new GsonBuilder().create()
       .fromJson(html, ApiSongList.class);
     return apiSongs.categories

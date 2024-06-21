@@ -29,8 +29,8 @@ public class PyPyApi {
     List<String> originalUrl
   ) {}
 
-  public static @NotNull ImmutableSeq<Song> parse() {
-    var html = ApiHelper.getHtml(API_URL);
+  public static @NotNull ImmutableSeq<Song> parse(@NotNull Main.AppOpts opts) {
+    var html = ApiHelper.getHtml(API_URL, opts.proxy());
     var apiSongs = new GsonBuilder().create()
       .fromJson(html, ApiSongList.class);
     return apiSongs.songs

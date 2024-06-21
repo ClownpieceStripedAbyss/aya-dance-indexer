@@ -16,7 +16,7 @@ public enum YoutubeFetcher implements Fetcher {
   }
 
   @Override public @NotNull SongMetadata doComputeMetadata(@NotNull SongInput input) {
-    var html = ApiHelper.getHtml(input.originalUrl());
+    var html = ApiHelper.getHtml(input.originalUrl(), null);
     var x = Jsoup.parse(html);
 
     // <meta name="title" content="Para Para Sakura | VRChat Fitness Dance | Song^_^">

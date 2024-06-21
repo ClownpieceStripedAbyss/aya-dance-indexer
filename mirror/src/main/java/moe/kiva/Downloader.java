@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ProxySelector;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -55,10 +54,7 @@ public record Downloader(
     @Nullable InetSocketAddress proxy,
     boolean trustLocalFiles
   ) {
-    var builder = HttpClient.newBuilder()
-      .version(HttpClient.Version.HTTP_2);
-    if (proxy != null) builder.proxy(ProxySelector.of(proxy));
-    var client = builder.build();
+    var client = ApiHelper.httpClient(proxy);
     return new Downloader(songs, ayaSongs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),
