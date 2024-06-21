@@ -54,7 +54,7 @@ public record Downloader(
     @Nullable InetSocketAddress proxy,
     boolean trustLocalFiles
   ) {
-    var client = ApiHelper.httpClient(proxy);
+    var client = ApiHelper.httpClient(false, proxy);
     return new Downloader(songs, ayaSongs, MutableList.create(), outputDir,
       Executors.newFixedThreadPool(4),
       new Sync(songs.size(), new IntVar(0), new CountDownLatch(songs.size())),

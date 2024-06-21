@@ -1,4 +1,4 @@
-package moe.kiva.fetch;
+package moe.kiva.types;
 
 import moe.kiva.Song;
 import org.jetbrains.annotations.NotNull;

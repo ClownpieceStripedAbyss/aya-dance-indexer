@@ -1,14 +1,17 @@
-package moe.kiva.fetch;
+package moe.kiva.types;
 
 import kala.collection.immutable.ImmutableSeq;
 import kala.control.Result;
 import kala.control.Try;
+import moe.kiva.fetchers.BiliBiliFetcher;
+import moe.kiva.fetchers.YoutubeFetcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface Fetcher {
-  @NotNull ImmutableSeq<Fetcher> FETCHERS = ImmutableSeq.of(
-    YoutubeFetcher.INSTANCE
+public interface SongMetadataFetcher {
+  @NotNull ImmutableSeq<SongMetadataFetcher> FETCHERS = ImmutableSeq.of(
+    YoutubeFetcher.INSTANCE,
+    BiliBiliFetcher.INSTANCE
   );
 
   static @Nullable SongMetadata fetchMetadata(@NotNull SongInput input) {
@@ -23,7 +26,7 @@ public interface Fetcher {
   }
 
   private static @Nullable SongMetadata doFetchMetadata(@NotNull SongInput input) {
-    for (Fetcher fetcher : FETCHERS) {
+    for (SongMetadataFetcher fetcher : FETCHERS) {
       if (fetcher.canFetch(input.originalUrl())) {
         var x = fetcher.computeMetadata(input);
         if (x.isErr()) {

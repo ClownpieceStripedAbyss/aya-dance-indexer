@@ -2,8 +2,8 @@ package moe.kiva;
 
 import com.google.gson.GsonBuilder;
 import kala.control.Option;
-import moe.kiva.fetch.Fetcher;
-import moe.kiva.fetch.SongInput;
+import moe.kiva.types.SongInput;
+import moe.kiva.types.SongMetadataFetcher;
 import org.jetbrains.annotations.NotNull;
 
 public class Main {
@@ -14,7 +14,7 @@ public class Main {
     }
 
     var input = parseSongInput(args);
-    var x = Fetcher.fetchMetadata(input);
+    var x = SongMetadataFetcher.fetchMetadata(input);
     if (x == null) {
       System.err.println("Failed to fetch metadata");
       System.exit(1);

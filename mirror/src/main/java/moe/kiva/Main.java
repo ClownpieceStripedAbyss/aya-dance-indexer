@@ -78,6 +78,29 @@ public class Main {
     if (opts.generateVidViz) generateVidViz(songList);
   }
 
+  public static String escape(String s){
+    return s.replace("'", "''");
+  }
+
+  private static void printSQL(@NotNull ImmutableSeq<Song> ayaSong) throws IOException {
+    // insert into aya_videos (id, category, title, categoryName, titleSpell, volume, start, end, flip, checksum, originalUrl) values (1,5,"2 Be Loved (Am I Ready) - Lizzo", "FitDance", "2 Be Loved ( Am I Ready ) - Lizzo", 0.36, 0, 202, false, "24ea429a602f4c967de85b64cd110442", "https://www.youtube.com/watch?v=qylu4Ajh6k8");
+    var x = ayaSong.map(s -> "insert into aya_videos (id, category, title, categoryName, titleSpell, volume, start, end, flip, checksum, originalUrl) values (%d, %d, '%s', '%s', '%s', %.2f, %d, %d, %s, '%s', '%s');".formatted(
+        s.id(),
+        s.category(),
+        escape(s.title()),
+        escape(s.categoryName()),
+        escape(s.titleSpell()),
+        s.volume(),
+        s.start(),
+        s.end(),
+        s.flip(),
+        s.checksum(),
+        new GsonBuilder().disableHtmlEscaping().create().toJson(s.originalUrl())
+      ))
+      .joinToString("\n");
+    Files.writeString(Path.of("aya-songs.sql"), x, StandardCharsets.UTF_8);
+  }
+
   private static void downloadVideos(@NotNull AppOpts opts, @NotNull ImmutableSeq<Song> songList, @NotNull ImmutableSeq<Song> ayaSongList) {
     if (opts.trustLocalFiles) {
       System.out.println("Trust local files enabled, but if you're not sure, please disable it.");
