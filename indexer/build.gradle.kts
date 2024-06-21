@@ -16,6 +16,8 @@ dependencies {
 
   implementation(libs.gson)
   implementation(libs.jsoup)
+  implementation(libs.picocli.runtime)
+  annotationProcessor(libs.picocli.codegen)
 
   implementation(project(":base"))
 

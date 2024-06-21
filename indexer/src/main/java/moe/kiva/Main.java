@@ -5,15 +5,32 @@ import kala.control.Option;
 import moe.kiva.types.SongInput;
 import moe.kiva.types.SongMetadataFetcher;
 import org.jetbrains.annotations.NotNull;
+import picocli.CommandLine;
 
-public class Main {
+import java.util.Objects;
+import java.util.concurrent.Callable;
+
+public class Main extends MainArgs implements Callable<Integer> {
   public static void main(String @NotNull [] args) {
-    if (args.length != 9 && args.length != 5) {
-      System.err.println("Usage: <url> <id> <catId> <catName> <flip> [<volume> <titleOverride> <startOverride> <endOverride>]");
-      System.exit(1);
-    }
+    System.exit(new CommandLine(new Main()).execute(args));
+  }
 
-    var input = parseSongInput(args);
+  private static @NotNull SongInput parseSongInput(@NotNull MainArgs args) {
+    return new SongInput(
+      Objects.requireNonNull(args.url),
+      args.id,
+      args.catId,
+      Objects.requireNonNull(args.catName),
+      args.volume,
+      args.flip,
+      Option.ofNullable(args.titleOverride),
+      Option.ofNullable(args.startOverride),
+      Option.ofNullable(args.endOverride)
+    );
+  }
+
+  @Override public Integer call() {
+    var input = parseSongInput(this);
     var x = SongMetadataFetcher.fetchMetadata(input);
     if (x == null) {
       System.err.println("Failed to fetch metadata");
@@ -25,32 +42,6 @@ public class Main {
       .create()
       .toJson(x.song());
     System.out.println(json);
-  }
-
-  private static @NotNull SongInput parseSongInput(String @NotNull [] args) {
-    var url = args[0];
-    var id = Integer.parseInt(args[1]);
-    var catId = Integer.parseInt(args[2]);
-    var catName = args[3];
-    var flip = Boolean.parseBoolean(args[4]);
-
-    boolean shorterVersion = args.length == 5;
-
-    var volume = shorterVersion ? 0.35f : Float.parseFloat(args[5]);
-    var titleOverride = shorterVersion ? Option.<String>none() : args[6].equals("null") ? Option.<String>none() : Option.some(args[6]);
-    var startOverride = shorterVersion ? Option.<Integer>none() : args[7].equals("null") ? Option.<Integer>none() : Option.some(Integer.parseInt(args[7]));
-    var endOverride = shorterVersion ? Option.<Integer>none() : args[8].equals("null") ? Option.<Integer>none() : Option.some(Integer.parseInt(args[8]));
-
-    return new SongInput(
-      url,
-      id,
-      catId,
-      catName,
-      volume,
-      flip,
-      titleOverride,
-      startOverride,
-      endOverride
-    );
+    return 0;
   }
 }
