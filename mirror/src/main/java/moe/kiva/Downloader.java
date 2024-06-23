@@ -103,6 +103,9 @@ public record Downloader(
         || isMetadataForSameSong(song, fromMetadata);
       var needFixMetadata = fromMetadata == null
         || needFixMetadata(song, fromMetadata);
+      var needFixMetadataForTrustLocalFiles = trustLocalFiles
+        && fromMetadata != null
+        && fromMetadata.checksum() == null;
 
       // if trustLocalFiles, don't check checksum
       var checksumMismatch = !trustLocalFiles
@@ -115,13 +118,18 @@ public record Downloader(
         Files.deleteIfExists(metadata);
         return false;
       }
-      if (already && needFixMetadata) {
+      if (already && (needFixMetadata || needFixMetadataForTrustLocalFiles)) {
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
           song.id(), song.title());
         // if trustLocalFiles, use the old checksum if it exists
-        if (trustLocalFiles && fromMetadata != null && fromMetadata.checksum() != null) {
-          song = song.withChecksum(fromMetadata.checksum());
+        if (trustLocalFiles) {
+          if (fromMetadata != null && fromMetadata.checksum() != null) {
+            song = song.withChecksum(fromMetadata.checksum());
+          } else {
+            var checksum = Song.computeChecksum(video);
+            song = checksum == null ? song : song.withChecksum(checksum);
+          }
         }
         // Ok, patch it
         saveMetadata(song, metadata);
