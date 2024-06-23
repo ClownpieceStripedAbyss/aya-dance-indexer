@@ -122,11 +122,12 @@ public record Downloader(
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
           song.id(), song.title());
-        // if trustLocalFiles, use the old checksum if it exists
         if (trustLocalFiles) {
           if (fromMetadata != null && fromMetadata.checksum() != null) {
+            // if trustLocalFiles, use the old checksum if it exists
             song = song.withChecksum(fromMetadata.checksum());
           } else {
+            // Ok, now we have to compute the checksum
             var checksum = Song.computeChecksum(video);
             song = checksum == null ? song : song.withChecksum(checksum);
           }
