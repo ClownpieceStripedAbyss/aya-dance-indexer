@@ -97,20 +97,17 @@ public record Downloader(
       var contents = Files.readString(metadata, StandardCharsets.UTF_8);
       var fromMetadata = Try.of(() -> new Gson().fromJson(contents, Song.class)).getOrNull();
 
-      var localChecksum = trustLocalFiles && song.checksum() != null
-        // fast-path: song.checksum() is already computed from the local file, see `prepareSong`
-        ? song.checksum()
-        // slow-path: song.checksum() is obtained from AyaDance, so we need to compute locally.
-        : Song.computeChecksum(video);
-
       // `fromMetadata == null` implies there's a breaking change in the format of the json,
       // we should always fix it.
       var already = fromMetadata == null
         || isMetadataForSameSong(song, fromMetadata);
       var needFixMetadata = fromMetadata == null
         || needFixMetadata(song, fromMetadata);
-      var checksumMismatch = song.checksum() != null
-        && !Objects.equals(song.checksum(), localChecksum);
+
+      // if trustLocalFiles, don't check checksum
+      var checksumMismatch = !trustLocalFiles
+        && song.checksum() != null
+        && !Objects.equals(song.checksum(), Song.computeChecksum(video));
 
       if (already && checksumMismatch) {
         System.out.printf("WARN: Checksum mismatch for song: %d, name: %s, deleting %n", song.id(), song.title());
@@ -122,6 +119,11 @@ public record Downloader(
         System.out.printf("[%d/%d] Patching downloaded id: %d, name: %s, metadata mismatch%n",
           sync.current(), sync.total,
           song.id(), song.title());
+        // if trustLocalFiles, use the old checksum if it exists
+        if (trustLocalFiles && fromMetadata != null && fromMetadata.checksum() != null) {
+          song = song.withChecksum(fromMetadata.checksum());
+        }
+        // Ok, patch it
         saveMetadata(song, metadata);
       }
       return already;
@@ -156,9 +158,12 @@ public record Downloader(
   private @NotNull Song prepareSong(@NotNull Song rawSong, @NotNull Path metadata, @NotNull Path video) {
     // trustLocalFiles should only be used by Kiva for bootstrapping aya-dance-cf.kiva.moe
     if (trustLocalFiles) {
-      if (Files.exists(metadata) && Files.exists(video))
-        return rawSong.withChecksumFromFile(video);
-      System.out.printf("[INFO] Hi Kiva, looks like this video id: %d, name: %s is not downloaded yet%n", rawSong.id(), rawSong.title());
+      // Delay the checksum computation to the last moment!!!
+      // if (Files.exists(metadata) && Files.exists(video))
+      //   return rawSong.withChecksumFromFile(video);
+      if (!Files.exists(metadata) || !Files.exists(video)) {
+        System.out.printf("[INFO] Hi Kiva, looks like this video id: %d, name: %s is not downloaded yet%n", rawSong.id(), rawSong.title());
+      }
       return rawSong;
     }
     var ayaSong = ayaSongs.findFirst(s -> s.id() == rawSong.id());
